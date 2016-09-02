@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<yml_catalog date="2016-02-05 17:22">
+<shop>
+<name>ABC</name>
+<company>ABC inc.</company>
+<url>http://www.abc.ru/</url>
+
+<currencies>
+<currency  id="RUR" rate="1"/>
+<currency  id="USD" rate="80"/>
+</currencies>
+
+<categories>
+<category id="1278">Электроника</category>
+<category id="3761" parentId="1278">Телевизоры</category>
+<category id="1553" parentId="3761">Медиа-плееры</category>
+<category id="3798">Бытовая техника</category>
+<category id="1293" parentId="3798">Холодильники</category>
+</categories>
+
+<delivery-options>
+<option cost="500" days="0" order-before="15"/>
+<option cost="300" days="1-3"/>
+</delivery-options>
+
+<cpa>1</cpa>
+
+<offers>
+<offer id="158" available="true" bid="23" cbid="43">
+<url>http://www.abc.ru/158.html</url>
+<price from="true">55690</price>
+<currencyId>RUR</currencyId>
+<categoryId>1293</categoryId>
+<picture>http://www.abc.ru/1580.jpg</picture>
+<picture>http://www.abc.ru/1581.jpg</picture>
+<picture>http://www.abc.ru/1582.jpg</picture>
+<picture>http://www.abc.ru/1583.jpg</picture>
+<store>false</store>
+<delivery>true</delivery>
+<name>Смартфон Apple iPhone 6s 128gb Space Gray</name>
+<vendor>Apple</vendor>
+<model>iPhone 6s 128gb Space Gray</model>
+<description>Описание товара 1</description>
+<sales_notes>Необходима предоплата 50%</sales_notes>
+<barcode>7564756475648</barcode>
+<age unit="month">0</age>
+<manufacturer_warranty>false</manufacturer_warranty>
+<param name="Тип">моноблок</param>
+<param name="Материал">алюминий</param>
+<param name="Wi-Fi" unit="">есть</param>
+<param name="Размер экрана" unit="дюйм">27</param>
+<param name="Размер оперативной памяти" unit="Мб">4096</param>
+<param name="Объём жесткого диска" unit="Тб">1</param>
+<param name="Вес" unit="кг">13.8</param>
+</offer>
+
+<offer id="159" available="true" cbid="35">
+<url>http://www.abc.ru/159.html</url>
+<price>3045.5</price>
+<currencyId>RUR</currencyId>
+<categoryId>1293</categoryId>
+<picture>http://www.abc.ru/1590.jpg</picture>
+<picture>http://www.abc.ru/1591.jpg</picture>
+<store>false</store>
+<delivery>true</delivery>
+<name>Наушники Koss Sporta Pro</name>
+<vendor>Koss</vendor>
+<model>Sporta Pro</model>
+<description>Описание товара</description>
+<sales_notes>Покупка в день заказа</sales_notes>
+<cpa>0</cpa>
+<delivery-options>
+<option cost="1000" days="1" order-before="15"/>
+</delivery-options>
+<outlets>
+<outlet id="2" instock="50" booking="true"/>
+<outlet id="3" instock="100" booking="false"/>
+</outlets>
+<barcode>7564756475648</barcode>
+<age>0</age>
+<manufacturer_warranty>true</manufacturer_warranty>
+<param name="Тип">12344</param>
+<param name="Материал">asdfgadfg</param>
+<param name="Wi-Fi" unit="">ага</param>
+<param name="Размер экрана" unit="дюйм">27</param>
+<param name="Размер оперативной памяти" unit="Мб">4096</param>
+<param name="Объём жесткого диска" unit="Тб">1</param>
+<param name="Вес" unit="кг">13.8</param>
+</offer>
+</offers>
+</shop>
+</yml_catalog>

@@ -1,0 +1,30 @@
+{
+    "name": "lireincore/ymlparser",
+    "type": "library",
+    "description": "YML (Yandex Market Language) parser",
+    "keywords": ["yml", "parser", "yandex", "market"],
+    "homepage": "https://github.com/lireincore/ymlparser",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "LireinCore",
+            "email": "lirein@inbox.ru"
+        }
+    ],
+    "require": {
+        "php": ">=5.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": ">=4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "LireinCore\\YMLParser\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LireinCore\\YMLParser\\Test\\": "tests"
+        }
+    }
+}
