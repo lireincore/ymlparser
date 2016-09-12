@@ -2,9 +2,6 @@
 
 namespace LireinCore\YMLParser;
 
-use LireinCore\YMLParser\Offer\Outlet;
-use LireinCore\YMLParser\Offer\Param;
-
 class YML
 {
     /**
@@ -28,11 +25,6 @@ class YML
     protected $path = '';
 
     /**
-     * @var array
-     */
-    protected $pathLog = [];
-
-    /**
      * @var string
      */
     protected $date;
@@ -54,16 +46,11 @@ class YML
      * @param string $file
      * @throws \Exception
      */
-    public function parse($file = __DIR__ . '/../example.xml')
+    public function parse($file)
     {
         $this->open($file);
 
         $this->file = $file;
-
-        /*$this->XMLReader->setParserProperty(\XMLReader::VALIDATE, true);
-        if (!$this->XMLReader->isValid()) {
-            throw new \Exception('Invalid XML file');
-        }*/
 
         while ($this->read()) {
             if ($this->path == 'yml_catalog') {
@@ -128,56 +115,22 @@ class YML
     protected function parseShop()
     {
         $xml = $this->XMLReader;
-        $attributes = [];
         $shop = new Shop();
+        $nodes = [];
 
         while ($this->read()) {
-            if ($this->path == 'yml_catalog/shop/currencies') {
-                while ($this->read()) {
-                    if ($xml->nodeType == \XMLReader::ELEMENT && $xml->name == 'currency') {
-                        $node = $this->parseSimpleNode('yml_catalog/shop/currencies');
-                        $shop->addCurrency((new Currency())->setAttributes($node['attributes']));
-                    }
-                    elseif ($this->path == 'yml_catalog/shop') {
-                        break;
-                    }
-                }
-            }
-            elseif ($this->path == 'yml_catalog/shop/categories') {
-                while ($this->read()) {
-                    if ($xml->nodeType == \XMLReader::ELEMENT && $xml->name == 'category') {
-                        $node = $this->parseSimpleNode('yml_catalog/shop/categories');
-                        $shop->addCategory((new Category())->setAttributes($node['attributes'] + ['name' => $node['value']]));
-                    }
-                    elseif ($this->path == 'yml_catalog/shop') {
-                        break;
-                    }
-                }
-            }
-            elseif ($this->path == 'yml_catalog/shop/delivery-options') {
-                while ($this->read()) {
-                    if ($xml->nodeType == \XMLReader::ELEMENT && $xml->name == 'option') {
-                        $node = $this->parseSimpleNode('yml_catalog/shop/delivery-options');
-                        $shop->addDeliveryOption((new DeliveryOption())->setAttributes($node['attributes']));
-                    }
-                    elseif ($this->path == 'yml_catalog/shop') {
-                        break;
-                    }
-                }
-            }
-            elseif ($this->path == 'yml_catalog/shop/offers') {
+            if ($this->path == 'yml_catalog/shop/offers') {
                 $shop->setOffersCount($this->parseOffersCount());
             }
-            elseif ($this->path == "yml_catalog/shop/{$xml->name}") {
-                $node = $this->parseSimpleNode('yml_catalog/shop');
-                $attributes[$node['name']] = $node['value'];
+            elseif ($xml->nodeType == \XMLReader::ELEMENT) {
+                $nodes[] = $this->parseNode('yml_catalog/shop');
             }
             elseif ($this->path == 'yml_catalog') {
                 break;
             }
         }
 
-        $shop->setAttributes($attributes);
+        $shop->setShop(['name' => 'shop', 'attributes' => [], 'value' => null, 'nodes' => $nodes]);
 
         return $shop;
     }
@@ -187,90 +140,34 @@ class YML
      */
     protected function parseOffer()
     {
-        $xml = $this->XMLReader;
-        $attributes = $this->parseAttributes();
-        $type = isset($attributes['type']) ? $attributes['type'] : null;
-        $offer = $this->createOffer($type);
+        $offerNode = $this->parseNode('yml_catalog/shop/offers');
 
-        while ($this->read()) {
-            if ($this->path == 'yml_catalog/shop/offers/offer/delivery-options') {
-                while ($this->read()) {
-                    if ($xml->nodeType == \XMLReader::ELEMENT && $xml->name == 'option') {
-                        $node = $this->parseSimpleNode('yml_catalog/shop/offers/offer/delivery-options');
-                        $offer->addDeliveryOption((new DeliveryOption())->setAttributes($node['attributes']));
-                    }
-                    elseif ($this->path == 'yml_catalog/shop/offers/offer') {
-                        break;
-                    }
-                }
-            }
-            elseif ($this->path == 'yml_catalog/shop/offers/offer/outlets') {
-                while ($this->read()) {
-                    if ($xml->nodeType == \XMLReader::ELEMENT && $xml->name == 'outlet') {
-                        $node = $this->parseSimpleNode('yml_catalog/shop/offers/offer/outlets');
-                        $offer->addOutlet((new Outlet())->setAttributes($node['attributes']));
-                    }
-                    elseif ($this->path == 'yml_catalog/shop/offers/offer') {
-                        break;
-                    }
-                }
-            }
-            elseif ($this->path == 'yml_catalog/shop/offers/offer/picture') {
-                $node = $this->parseSimpleNode('yml_catalog/shop/offers/offer');
-                $offer->addPicture($node['value']);
-            }
-            elseif ($this->path == 'yml_catalog/shop/offers/offer/barcode') {
-                $node = $this->parseSimpleNode('yml_catalog/shop/offers/offer');
-                $offer->addBarcode($node['value']);
-            }
-            elseif ($this->path == 'yml_catalog/shop/offers/offer/param') {
-                $node = $this->parseSimpleNode('yml_catalog/shop/offers/offer');
-                $offer->addParam((new Param())->setAttributes($node['attributes'] + ['value' => $node['value']]));
-            }
-            elseif ($this->path == 'yml_catalog/shop/offers/offer/price') {
-                $node = $this->parseSimpleNode('yml_catalog/shop/offers/offer');
-                $attributes[$node['name']] = $node['value'];
-                if (isset($node['attributes']['from'])) $attributes['from'] = $node['attributes']['from'];
-            }
-            elseif ($this->path == 'yml_catalog/shop/offers/offer/age') {
-                $node = $this->parseSimpleNode('yml_catalog/shop/offers/offer');
-                $attributes[$node['name']] = $node['value'];
-                if (isset($node['attributes']['unit'])) $attributes['unit'] = $node['attributes']['unit'];
-            }
-            elseif ($this->path == "yml_catalog/shop/offers/offer/{$xml->name}") {
-                $node = $this->parseSimpleNode('yml_catalog/shop/offers/offer');
-                $attributes[$node['name']] = $node['value'];
-            }
-            elseif ($this->path == 'yml_catalog/shop/offers') {
-                break;
-            }
-        }
-
-        $offer->setAttributes($attributes);
+        $type = isset($offerNode['attributes']['type']) ? $offerNode['attributes']['type'] : null;
+        $offer = $this->createOffer($type)->setOffer($offerNode);
 
         return $offer;
     }
-
-    /*protected function parseCompositeNode($basePath)
-    {
-
-    }*/
 
     /**
      * @param string $basePath
      * @return array
      */
-    protected function parseSimpleNode($basePath)
+    protected function parseNode($basePath)
     {
         $xml = $this->XMLReader;
         $name = $xml->name;
+        $path = $basePath . '/' . $name;
         $value = null;
+        $nodes = [];
 
         $attributes = $this->parseAttributes();
 
         if (!$xml->isEmptyElement) {
             while ($this->read()) {
-                if ($xml->nodeType == \XMLReader::TEXT && $xml->hasValue) {
+                if ($xml->nodeType == \XMLReader::ELEMENT) {
+                    $nodes[] = $this->parseNode($path);
+                }
+                elseif ($xml->nodeType == \XMLReader::TEXT && $xml->hasValue) {
                     $value = $xml->value;
                 }
                 elseif ($this->path == $basePath) {
@@ -279,7 +176,7 @@ class YML
             }
         }
 
-        return ['name' => $name, 'attributes' => $attributes, 'value' => $value];
+        return ['name' => $name, 'attributes' => $attributes, 'value' => $value, 'nodes' => $nodes];
     }
 
     /**
@@ -328,27 +225,35 @@ class YML
     protected function open($file)
     {
         if (!is_file($file)) {
-            throw new \Exception("File {$file} not found");
+            throw new \Exception("File '{$file}' not found");
         }
+
+        $dom = new \DOMDocument();
+        if(!@$dom->load($file)) {
+            throw new \Exception("'{$file}' is invalid XML document");
+        }
+        unset($dom);
 
         if (!$this->XMLReader->open($file)) {
-            throw new \Exception('Failed to open file');
+            throw new \Exception("Failed to open file '{$file}'");
+        }
+        
+        $shemapath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'yml.xsd';
+        if (!$this->XMLReader->setSchema($shemapath)) {
+            throw new \Exception("Failed to open XML Schema file '{$shemapath}'");
         }
     }
-
-    /**
-     *
-     */
+    
     protected function close()
     {
         $this->pathArr = [];
         $this->path = '';
-        $this->pathLog = [];
         $this->XMLReader->close();
     }
 
     /**
      * @return bool
+     * @throws \Exception
      */
     protected function read()
     {
@@ -358,11 +263,9 @@ class YML
             if ($xml->nodeType == \XMLReader::ELEMENT && !$xml->isEmptyElement) {
                 array_push($this->pathArr, $xml->name);
                 $this->path = implode('/', $this->pathArr);
-                $this->pathLog[] = $this->path;
             } elseif ($xml->nodeType == \XMLReader::END_ELEMENT) {
                 array_pop($this->pathArr);
                 $this->path = implode('/', $this->pathArr);
-                $this->pathLog[] = $this->path;
             }
 
             return true;
@@ -388,6 +291,10 @@ class YML
                 return new \LireinCore\YMLParser\Offer\ArtistTitleOffer();
             case 'medicine':
                 return new \LireinCore\YMLParser\Offer\MedicineOffer();
+            case 'event-ticket':
+                return new \LireinCore\YMLParser\Offer\EventTicketOffer();
+            case 'tour':
+                return new \LireinCore\YMLParser\Offer\TourOffer();
             default:
                 return new \LireinCore\YMLParser\Offer\SimpleOffer();
         }

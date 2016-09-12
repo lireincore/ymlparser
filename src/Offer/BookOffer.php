@@ -17,9 +17,10 @@ class BookOffer extends ABookOffer
     /**
      * @return array
      */
-    public function getFiledsList()
+    public function getAttributesList()
     {
-        return array_merge(parent::getFiledsList(), [
+        return array_merge(parent::getAttributesList(), [
+            //subnodes
             'binding', 'page_extent'
         ]);
     }

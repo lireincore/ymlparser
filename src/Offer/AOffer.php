@@ -12,12 +12,12 @@ abstract class AOffer
     /**
      * @var int
      */
-    protected $cbid;
+    protected $bid;
 
     /**
      * @var int
      */
-    protected $bid;
+    protected $cbid;
 
     /**
      * @var bool
@@ -57,7 +57,7 @@ abstract class AOffer
     /**
      * @var bool
      */
-    protected $delivery;
+    protected $store;
 
     /**
      * @var bool
@@ -67,7 +67,7 @@ abstract class AOffer
     /**
      * @var bool
      */
-    protected $store;
+    protected $delivery;
 
     /**
      * @var Outlet[]
@@ -100,11 +100,6 @@ abstract class AOffer
     protected $cpa;
 
     /**
-     * @var Param[]
-     */
-    protected $params = [];
-
-    /**
      * @var string
      */
     protected $expiry;
@@ -120,36 +115,84 @@ abstract class AOffer
     protected $dimensions;
 
     /**
-     * @return array
+     * @var Param[]
      */
-    public function getAttributesList()
-    {
-        return ['id', 'cbid', 'bid', 'available'];
-    }
+    protected $params = [];
 
     /**
      * @return array
      */
-    public function getFiledsList()
+    public function getAttributesList()
     {
         return [
-            'price', 'oldPrice', 'currencyId', 'categoryId', 'picture', 'delivery',
+            //attributes
+            'id', 'cbid', 'bid', 'available', //type,
+            //subnodes
+            'price', 'oldprice', 'currencyId', 'categoryId', 'picture', 'delivery',
             'pickup', 'store', 'outlets', 'description', 'sales_notes', 'country_of_origin',
             'barcode', 'cpa', 'param', 'expiry', 'weight', 'dimensions'
         ];
     }
 
     /**
-     * @param array $attributes
+     * @param array $offerNode
      * @return $this
      */
-    public function setAttributes($attributes)
+    public function setOffer(array $offerNode)
     {
-        foreach ($attributes as $name => $value) {
-            $setter = 'set' . str_replace(['-', '_'], '', $name);
-            if (method_exists($this, $setter)) {
-                $this->$setter($value);
+        foreach ($offerNode['attributes'] as $name => $value) {
+            $this->setField($name, $value);
+        }
+
+        foreach ($offerNode['nodes'] as $attrNode) {
+            $this->setAttribute($attrNode);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array $attrNode
+     * @return $this
+     */
+    public function setAttribute(array $attrNode)
+    {
+        if ($attrNode['name'] == 'outlets') {
+            foreach ($attrNode['nodes'] as $subNode) {
+                $this->addOutlet((new Outlet())->setAttributes($subNode['attributes']));
             }
+        }
+        elseif ($attrNode['name'] == 'picture') {
+            $this->addPicture($attrNode['value']);
+        }
+        elseif ($attrNode['name'] == 'barcode') {
+            $this->addBarcode($attrNode['value']);
+        }
+        elseif ($attrNode['name'] == 'param') {
+            $this->addParam((new Param())->setAttributes($attrNode['attributes'] + ['value' => $attrNode['value']]));
+        }
+        else {
+            if (!is_null($attrNode['value'])) $this->setField($attrNode['name'], $attrNode['value']);
+            if (!empty($attrNode['attributes'])) {
+                foreach ($attrNode['attributes'] as $name => $value) {
+                    $this->setField($name, $value);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return $this
+     */
+    public function setField($name, $value)
+    {
+        $setter = 'set' . str_replace(['-', '_'], '', $name);
+        if (method_exists($this, $setter)) {
+            $this->$setter($value);
         }
 
         return $this;
@@ -177,25 +220,6 @@ abstract class AOffer
     /**
      * @return int
      */
-    public function getCbid()
-    {
-        return $this->cbid;
-    }
-
-    /**
-     * @param int $value
-     * @return $this
-     */
-    public function setCbid($value)
-    {
-        $this->cbid = (int)$value;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
     public function getBid()
     {
         return $this->bid;
@@ -208,6 +232,25 @@ abstract class AOffer
     public function setBid($value)
     {
         $this->bid = (int)$value;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCbid()
+    {
+        return $this->cbid;
+    }
+
+    /**
+     * @param int $value
+     * @return $this
+     */
+    public function setCbid($value)
+    {
+        $this->cbid = (int)$value;
 
         return $this;
     }
@@ -361,18 +404,18 @@ abstract class AOffer
     /**
      * @return bool
      */
-    public function getDelivery()
+    public function getStore()
     {
-        return $this->delivery;
+        return $this->store;
     }
 
     /**
      * @param bool $value
      * @return $this
      */
-    public function setDelivery($value)
+    public function setStore($value)
     {
-        $this->delivery = $value === 'false' ? false : (bool)$value;
+        $this->store = $value === 'false' ? false : (bool)$value;
 
         return $this;
     }
@@ -399,18 +442,18 @@ abstract class AOffer
     /**
      * @return bool
      */
-    public function getStore()
+    public function getDelivery()
     {
-        return $this->store;
+        return $this->delivery;
     }
 
     /**
      * @param bool $value
      * @return $this
      */
-    public function setStore($value)
+    public function setDelivery($value)
     {
-        $this->store = $value === 'false' ? false : (bool)$value;
+        $this->delivery = $value === 'false' ? false : (bool)$value;
 
         return $this;
     }
@@ -556,38 +599,6 @@ abstract class AOffer
     }
 
     /**
-     * @return Param[]
-     */
-    public function getParams()
-    {
-        return $this->params;
-    }
-
-    /**
-     * @param Param[] $value
-     * @return $this
-     */
-    public function setParams(array $value)
-    {
-        foreach ($value as $param) {
-            $this->addParam($param);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Param $value
-     * @return $this
-     */
-    public function addParam(Param $value)
-    {
-        $this->params[] = $value;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getExpiry()
@@ -640,6 +651,38 @@ abstract class AOffer
     public function setDimensions($value)
     {
         $this->dimensions = (string)$value;
+
+        return $this;
+    }
+
+    /**
+     * @return Param[]
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    /**
+     * @param Param[] $value
+     * @return $this
+     */
+    public function setParams(array $value)
+    {
+        foreach ($value as $param) {
+            $this->addParam($param);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Param $value
+     * @return $this
+     */
+    public function addParam(Param $value)
+    {
+        $this->params[] = $value;
 
         return $this;
     }

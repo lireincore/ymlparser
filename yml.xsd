@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="yml_catalog">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="shop">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="name" type="xs:string" />
+                            <xs:element name="company" type="xs:string" />
+                            <xs:element name="url" type="xs:string" />
+                            <xs:element name="platform" type="xs:string" minOccurs="0" />
+                            <xs:element name="version" type="xs:string" minOccurs="0" />
+                            <xs:element name="agency" type="xs:string" minOccurs="0" />
+                            <xs:element name="email" type="xs:string" minOccurs="0" />
+                            <xs:element name="currencies">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="currency" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:attribute name="id" use="required">
+                                                    <xs:simpleType>
+                                                        <xs:restriction base="xs:NMTOKEN">
+                                                            <xs:enumeration value="RUR" />
+                                                            <xs:enumeration value="RUB" />
+                                                            <xs:enumeration value="UAH" />
+                                                            <xs:enumeration value="BYN" />
+                                                            <xs:enumeration value="KZT" />
+                                                            <xs:enumeration value="USD" />
+                                                            <xs:enumeration value="EUR" />
+                                                        </xs:restriction>
+                                                    </xs:simpleType>
+                                                </xs:attribute>
+                                                <xs:attribute name="rate" type="xs:string" use="optional" default="1" />
+                                                <xs:attribute name="plus" type="xs:integer" use="optional" default="0" />
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="categories">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="category" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                    <xs:extension base="xs:string">
+                                                        <xs:attribute name="id" type="xs:integer" use="required" />
+                                                        <xs:attribute name="parentId" type="xs:integer" use="optional" />
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:group ref="Delivery"/>
+                            <xs:element name="cpa" type="xs:integer" minOccurs="0" />
+                            <xs:element name="offers">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="offer" type="xs:anyType" maxOccurs="unbounded"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="date" type="xs:string" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <xs:group name="Delivery">
+        <xs:sequence>
+            <xs:choice minOccurs="1">
+                <xs:element name="local_delivery_cost" type="xs:integer" minOccurs="0" />
+                <xs:element name="delivery-options" type="DeliveryOptions" minOccurs="0" />
+            </xs:choice>
+        </xs:sequence>
+    </xs:group>
+
+    <xs:complexType name="DeliveryOptions">
+        <xs:sequence>
+            <xs:element name="option" maxOccurs="5">
+                <xs:complexType>
+                    <xs:attribute name="cost" type="xs:integer" use="required" />
+                    <xs:attribute name="days" type="xs:string" use="required" />
+                    <xs:attribute name="order-before" type="xs:integer" use="optional" />
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

@@ -2,8 +2,13 @@
 
 namespace LireinCore\YMLParser\Offer;
 
-abstract class AMainOffer extends ABaseOffer
+abstract class AMainOffer extends AExtOffer
 {
+    /**
+     * @var int
+     */
+    protected $groupId;
+
     /**
      * price[from]
      * @var bool
@@ -26,18 +31,48 @@ abstract class AMainOffer extends ABaseOffer
     protected $model;
 
     /**
-     * @var int
-     */
-    protected $groupId;
-
-    /**
      * @return array
      */
-    public function getFiledsList()
+    public function getAttributesList()
     {
-        return array_merge(parent::getFiledsList(), [
-            'vendor', 'vendorCode', 'model', 'group_id'
+        return array_merge(parent::getAttributesList(), [
+            //subnodes
+            'group_id', 'vendor', 'vendorCode', 'model'
         ]);
+    }
+
+    /**
+     * @param array $attrNode
+     * @return $this
+     */
+    /*public function setAttribute(array $attrNode)
+    {
+        //if ($attrNode['name'] == 'price') {
+        //    if (isset($attrNode['attributes']['from'])) $this->setField('from', $attrNode['attributes']['from']);
+        //}
+
+        parent::setAttribute($attrNode);
+
+        return $this;
+    }*/
+
+    /**
+     * @return int
+     */
+    public function getGroupId()
+    {
+        return $this->groupId;
+    }
+
+    /**
+     * @param int $value
+     * @return $this
+     */
+    public function setGroupId($value)
+    {
+        $this->groupId = (int)$value;
+
+        return $this;
     }
 
     /**
@@ -112,25 +147,6 @@ abstract class AMainOffer extends ABaseOffer
     public function setModel($value)
     {
         $this->model = (string)$value;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getGroupId()
-    {
-        return $this->groupId;
-    }
-
-    /**
-     * @param int $value
-     * @return $this
-     */
-    public function setGroupId($value)
-    {
-        $this->groupId = (int)$value;
 
         return $this;
     }

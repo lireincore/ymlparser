@@ -10,6 +10,17 @@ class SimpleOffer extends AMainOffer
     protected $name;
 
     /**
+     * @return array
+     */
+    public function getAttributesList()
+    {
+        return array_merge(parent::getAttributesList(), [
+            //subnodes
+            'name'
+        ]);
+    }
+
+    /**
      * @return string
      */
     public function getName()

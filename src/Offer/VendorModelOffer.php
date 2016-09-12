@@ -10,6 +10,17 @@ class VendorModelOffer extends AMainOffer
     protected $typePrefix;
 
     /**
+     * @return array
+     */
+    public function getAttributesList()
+    {
+        return array_merge(parent::getAttributesList(), [
+            //subnodes
+            'typePrefix'
+        ]);
+    }
+
+    /**
      * @return string
      */
     public function getTypePrefix()

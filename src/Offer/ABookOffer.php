@@ -2,17 +2,17 @@
 
 namespace LireinCore\YMLParser\Offer;
 
-abstract class ABookOffer extends ABaseOffer
+abstract class ABookOffer extends AExtOffer
 {
     /**
      * @var string
      */
-    protected $name;
+    protected $author;
 
     /**
      * @var string
      */
-    protected $author;
+    protected $name;
 
     /**
      * @var string
@@ -50,37 +50,19 @@ abstract class ABookOffer extends ABaseOffer
     protected $language;
 
     /**
-     * @var
+     * @var string
      */
-    protected $tableOfContents; //todo property type
+    protected $tableOfContents;
 
     /**
      * @return array
      */
-    public function getFiledsList()
+    public function getAttributesList()
     {
-        return array_merge(parent::getFiledsList(), [
+        return array_merge(parent::getAttributesList(), [
+            //subnodes
             'name', 'author', 'publisher', 'series', 'year', 'ISBN', 'volume', 'part', 'language', 'table_of_contents'
         ]);
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $value
-     * @return $this
-     */
-    public function setName($value)
-    {
-        $this->name = (string)$value;
-
-        return $this;
     }
 
     /**
@@ -98,6 +80,25 @@ abstract class ABookOffer extends ABaseOffer
     public function setAuthor($value)
     {
         $this->author = (string)$value;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $value
+     * @return $this
+     */
+    public function setName($value)
+    {
+        $this->name = (string)$value;
 
         return $this;
     }
@@ -236,7 +237,7 @@ abstract class ABookOffer extends ABaseOffer
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getTableOfContents()
     {
@@ -244,12 +245,12 @@ abstract class ABookOffer extends ABaseOffer
     }
 
     /**
-     * @param $value
+     * @param string $value
      * @return $this
      */
     public function setTableOfContents($value)
     {
-        $this->tableOfContents = $value; //todo type?
+        $this->tableOfContents = (string)$value;
 
         return $this;
     }

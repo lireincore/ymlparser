@@ -55,6 +55,12 @@ class Shop
     protected $deliveryOptions = [];
 
     /**
+     * Attribute is deprecated
+     * @var int
+     */
+    protected $localDeliveryCost;
+
+    /**
      * @var int
      */
     protected $cpa;
@@ -67,26 +73,72 @@ class Shop
     /**
      * @return array
      */
-    public function getFiledsList()
+    public function getAttributesList()
     {
         return [
-            'price', 'oldPrice', 'currencyId', 'categoryId', 'picture', 'delivery',
-            'pickup', 'store', 'outlets', 'description', 'sales_notes', 'country_of_origin',
-            'barcode', 'cpa', 'param', 'expiry', 'weight', 'dimensions'
+            //subnodes
+            'name', 'company', 'url', 'platform', 'version', 'agency', //offers,
+            'email', 'currencies', 'categories', 'delivery-options',
+            'local_delivery_cost', 'cpa',
         ];
     }
 
     /**
-     * @param array $attributes
+     * @param array $shopNode
      * @return $this
      */
-    public function setAttributes($attributes)
+    public function setShop(array $shopNode)
     {
-        foreach ($attributes as $name => $value) {
-            $setter = 'set' . str_replace(['-', '_'], '', $name);
-            if (method_exists($this, $setter)) {
-                $this->$setter($value);
+        foreach ($shopNode['nodes'] as $attrNode) {
+            $this->setAttribute($attrNode);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array $attrNode
+     * @return $this
+     */
+    public function setAttribute(array $attrNode)
+    {
+        if ($attrNode['name'] == 'currencies') {
+            foreach ($attrNode['nodes'] as $subNode) {
+                $this->addCurrency((new Currency())->setAttributes($subNode['attributes']));
             }
+        }
+        elseif ($attrNode['name'] == 'categories') {
+            foreach ($attrNode['nodes'] as $subNode) {
+                $this->addCategory((new Category())->setAttributes($subNode['attributes'] + ['name' => $subNode['value']]));
+            }
+        }
+        elseif ($attrNode['name'] == 'delivery-options') {
+            foreach ($attrNode['nodes'] as $subNode) {
+                $this->addDeliveryOption((new DeliveryOption())->setAttributes($subNode['attributes']));
+            }
+        }
+        else {
+            if (!is_null($attrNode['value'])) $this->setField($attrNode['name'], $attrNode['value']);
+            if (!empty($attrNode['attributes'])) {
+                foreach ($attrNode['attributes'] as $name => $value) {
+                    $this->setField($name, $value);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return $this
+     */
+    public function setField($name, $value)
+    {
+        $setter = 'set' . str_replace(['-', '_'], '', $name);
+        if (method_exists($this, $setter)) {
+            $this->$setter($value);
         }
 
         return $this;
@@ -276,6 +328,42 @@ class Shop
     }
 
     /**
+     * @param int $id
+     * @return Category|null
+     */
+    public function getCategoryParent($id)
+    {
+        if (array_key_exists($id, $this->categories)
+            && !is_null($parentId = $this->categories[$id]->getParentId())
+            && array_key_exists($parentId, $this->categories)) {
+            return $this->categories[$parentId];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param int $id
+     * @return Category[]
+     */
+    public function getCategoryHierarchy($id)
+    {
+        $parents = [];
+
+        if (array_key_exists($id, $this->categories)) {
+            $parents[$id] = $this->categories[$id];
+            $pid = $id;
+
+            while (($parent = $this->getCategoryParent($pid)) !== null) {
+                $pid = $parent->getId();
+                array_unshift($parents, $parent);
+            }
+        }
+
+        return $parents;
+    }
+
+    /**
      * @return Category[]
      */
     public function getCategories()
@@ -335,6 +423,25 @@ class Shop
     public function addDeliveryOption(DeliveryOption $value)
     {
         $this->deliveryOptions[] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLocalDeliveryCost()
+    {
+        return $this->localDeliveryCost;
+    }
+
+    /**
+     * @param int $value
+     * @return $this
+     */
+    public function setLocalDeliveryCost($value)
+    {
+        $this->localDeliveryCost = (int)$value;
 
         return $this;
     }

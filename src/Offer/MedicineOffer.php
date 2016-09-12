@@ -5,21 +5,6 @@ namespace LireinCore\YMLParser\Offer;
 class MedicineOffer extends AOffer
 {
     /**
-     * @var bool
-     */
-    protected $delivery = false;
-
-    /**
-     * @var bool
-     */
-    protected $pickup = true;
-
-    /**
-     * @var int
-     */
-    protected $cpa = 0;
-
-    /**
      * @var string
      */
     protected $name;
@@ -35,11 +20,27 @@ class MedicineOffer extends AOffer
     protected $vendorCode;
 
     /**
+     * @var bool
+     */
+    protected $delivery = false;
+
+    /**
+     * @var bool
+     */
+    protected $pickup = true;
+
+    /**
+     * @var int
+     */
+    protected $cpa = 0;
+
+    /**
      * @return array
      */
-    public function getFiledsList()
+    public function getAttributesList()
     {
-        return array_merge(parent::getFiledsList(), [
+        return array_merge(parent::getAttributesList(), [
+            //subnodes
             'name', 'vendor', 'vendorCode'
         ]);
     }

@@ -2,7 +2,7 @@
 
 namespace LireinCore\YMLParser\Offer;
 
-class ArtistTitleOffer extends AOffer
+class ArtistTitleOffer extends AExtOffer
 {
     /**
      * @var string
@@ -47,9 +47,10 @@ class ArtistTitleOffer extends AOffer
     /**
      * @return array
      */
-    public function getFiledsList()
+    public function getAttributesList()
     {
-        return array_merge(parent::getFiledsList(), [
+        return array_merge(parent::getAttributesList(), [
+            //subnodes
             'artist', 'title', 'year', 'media', 'starring', 'director', 'originalName', 'country'
         ]);
     }

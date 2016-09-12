@@ -20,19 +20,18 @@ $ composer require lireincore/ymlparser
 use LireinCore\YMLParser\YML;
 
 $yml = new YML();
-$yml->parse($filepath);
-$date = $yml->getDate();
-$shop = $yml->getShop();
-/**@var \LireinCore\YMLParser\Offer\AOffer $offer*/
-foreach ($yml->getOffers() as $offer) {
+try {
+    $yml->parse($filepath);
+    $date = $yml->getDate();
+    $shop = $yml->getShop();
+    /**@var \LireinCore\YMLParser\Offer\AOffer $offer*/
+    foreach ($yml->getOffers() as $offer) {
+        $offerCategoryHierarchy = $shop->getCategoryHierarchy($offer->getCategoryId);
+        //...
+    }
+} catch (\Exception $e) {
     //...
 }
-```
-
-## Testing
-
-``` bash
-$ phpunit
 ```
 
 ## License

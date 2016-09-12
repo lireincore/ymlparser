@@ -4,7 +4,7 @@ namespace LireinCore\YMLParser\Offer;
 
 use LireinCore\YMLParser\DeliveryOption;
 
-abstract class ABaseOffer extends AOffer
+abstract class AExtOffer extends AOffer
 {
     /**
      * @var int
@@ -17,6 +17,12 @@ abstract class ABaseOffer extends AOffer
     protected $marketCategory;
 
     /**
+     * Attribute is deprecated
+     * @var int
+     */
+    protected $localDeliveryCost;
+
+    /**
      * @var DeliveryOption[]
      */
     protected $deliveryOptions = [];
@@ -25,6 +31,11 @@ abstract class ABaseOffer extends AOffer
      * @var bool
      */
     protected $manufacturerWarranty;
+
+    /**
+     * @var bool
+     */
+    protected $downloadable;
 
     /**
      * @var bool
@@ -43,26 +54,38 @@ abstract class ABaseOffer extends AOffer
     protected $age;
 
     /**
-     * @var bool
-     */
-    protected $downloadable;
-
-    /**
      * @return array
      */
     public function getAttributesList()
     {
-        return array_merge(parent::getAttributesList(), ['fee']);
+        return array_merge(parent::getAttributesList(), [
+            //attributes
+            'fee',
+            //subnodes
+            'market_category', 'delivery-options', 'local_delivery_cost', 'manufacturer_warranty', 'adult', 'age', 'downloadable'
+        ]);
     }
 
     /**
-     * @return array
+     * @param array $attrNode
+     * @return $this
      */
-    public function getFiledsList()
+    public function setAttribute(array $attrNode)
     {
-        return array_merge(parent::getFiledsList(), [
-            'market_category', 'delivery-options', 'manufacturer_warranty', 'adult', 'age', 'downloadable'
-        ]);
+        if ($attrNode['name'] == 'delivery-options') {
+            foreach ($attrNode['nodes'] as $subNode) {
+                $this->addDeliveryOption((new DeliveryOption())->setAttributes($subNode['attributes']));
+            }
+        }
+        else {
+            /*if ($attrNode['name'] == 'age') {
+                if (isset($attrNode['attributes']['unit'])) $this->setField('unit', $attrNode['attributes']['unit']);
+            }*/
+
+            parent::setAttribute($attrNode);
+        }
+
+        return $this;
     }
 
     /**
@@ -99,6 +122,25 @@ abstract class ABaseOffer extends AOffer
     public function setMarketCategory($value)
     {
         $this->marketCategory = (string)$value;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLocalDeliveryCost()
+    {
+        return $this->localDeliveryCost;
+    }
+
+    /**
+     * @param int $value
+     * @return $this
+     */
+    public function setLocalDeliveryCost($value)
+    {
+        $this->localDeliveryCost = (int)$value;
 
         return $this;
     }
@@ -157,6 +199,25 @@ abstract class ABaseOffer extends AOffer
     /**
      * @return bool
      */
+    public function getDownloadable()
+    {
+        return $this->downloadable;
+    }
+
+    /**
+     * @param bool $value
+     * @return $this
+     */
+    public function setDownloadable($value)
+    {
+        $this->downloadable = $value === 'false' ? false : (bool)$value;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
     public function getAdult()
     {
         return $this->adult;
@@ -207,25 +268,6 @@ abstract class ABaseOffer extends AOffer
     public function setAge($value)
     {
         $this->age = (int)$value;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getDownloadable()
-    {
-        return $this->downloadable;
-    }
-
-    /**
-     * @param bool $value
-     * @return $this
-     */
-    public function setDownloadable($value)
-    {
-        $this->downloadable = $value === 'false' ? false : (bool)$value;
 
         return $this;
     }
