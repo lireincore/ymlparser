@@ -228,12 +228,6 @@ class YML
             throw new \Exception("File '{$file}' not found");
         }
 
-        $dom = new \DOMDocument();
-        if(!@$dom->load($file)) {
-            throw new \Exception("'{$file}' is invalid XML document");
-        }
-        unset($dom);
-
         if (!$this->XMLReader->open($file)) {
             throw new \Exception("Failed to open file '{$file}'");
         }

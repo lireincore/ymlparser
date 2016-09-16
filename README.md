@@ -8,7 +8,9 @@
 
 ## Install
 
-Add the `lireincore/ymlparser` package to your `require` section in the `composer.json` file.
+Add the `lireincore/ymlparser` package to your `require` section in the `composer.json` file
+
+or
 
 ``` bash
 $ composer require lireincore/ymlparser
@@ -24,9 +26,12 @@ try {
     $yml->parse($filepath);
     $date = $yml->getDate();
     $shop = $yml->getShop();
+    $offersCount = $shop->getOffersCount();
+    $shopData = $shop->getData();
     /**@var \LireinCore\YMLParser\Offer\AOffer $offer*/
     foreach ($yml->getOffers() as $offer) {
         $offerCategoryHierarchy = $shop->getCategoryHierarchy($offer->getCategoryId);
+        $offerData = $offer->getData();
         //...
     }
 } catch (\Exception $e) {

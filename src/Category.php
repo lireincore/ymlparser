@@ -4,6 +4,8 @@ namespace LireinCore\YMLParser;
 
 class Category
 {
+    use TYML;
+
     /**
      * @var int
      */
@@ -26,10 +28,7 @@ class Category
     public function setAttributes($attributes)
     {
         foreach ($attributes as $name => $value) {
-            $setter = 'set' . str_replace(['-', '_'], '', $name);
-            if (method_exists($this, $setter)) {
-                $this->$setter($value);
-            }
+            $this->setField($name, $value);
         }
 
         return $this;

@@ -2,15 +2,19 @@
 
 namespace LireinCore\YMLParser\Offer;
 
+use LireinCore\YMLParser\TYML;
+
 class Outlet
 {
+    use TYML;
+
     /**
-     * @var string //todo int?
+     * @var string //todo: int?
      */
     protected $id;
 
     /**
-     * @var int //todo out of range?
+     * @var int //todo: out of range?
      */
     protected $instock = 0;
 
@@ -26,10 +30,7 @@ class Outlet
     public function setAttributes($attributes)
     {
         foreach ($attributes as $name => $value) {
-            $setter = 'set' . str_replace(['-', '_'], '', $name);
-            if (method_exists($this, $setter)) {
-                $this->$setter($value);
-            }
+            $this->setField($name, $value);
         }
 
         return $this;

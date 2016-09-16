@@ -4,6 +4,8 @@ namespace LireinCore\YMLParser;
 
 class Currency
 {
+    use TYML;
+
     const CURRENCY_RUR = 'RUR';
     const CURRENCY_RUB = 'RUB';
     const CURRENCY_UAH = 'UAH';
@@ -39,10 +41,7 @@ class Currency
     public function setAttributes($attributes)
     {
         foreach ($attributes as $name => $value) {
-            $setter = 'set' . str_replace(['-', '_'], '', $name);
-            if (method_exists($this, $setter)) {
-                $this->$setter($value);
-            }
+            $this->setField($name, $value);
         }
 
         return $this;

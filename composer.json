@@ -1,7 +1,8 @@
 {
     "name": "lireincore/ymlparser",
-    "type": "library",
     "description": "YML (Yandex Market Language) parser",
+    "version": "2.1.0",
+    "type": "library",
     "keywords": ["yml", "parser", "yandex", "market"],
     "homepage": "https://github.com/lireincore/ymlparser",
     "license": "MIT",

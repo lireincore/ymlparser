@@ -4,6 +4,10 @@ namespace LireinCore\YMLParser;
 
 class Shop
 {
+    use TYML {
+        getData as private getDataT;
+    }
+
     /**
      * @var string
      */
@@ -130,18 +134,14 @@ class Shop
     }
 
     /**
-     * @param string $name
-     * @param mixed $value
-     * @return $this
+     * @return array
      */
-    public function setField($name, $value)
+    public function getData()
     {
-        $setter = 'set' . str_replace(['-', '_'], '', $name);
-        if (method_exists($this, $setter)) {
-            $this->$setter($value);
-        }
+        $data = $this->getDataT();
+        unset($data['offersCount']);
 
-        return $this;
+        return $data;
     }
 
     /**

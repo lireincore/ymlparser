@@ -2,8 +2,12 @@
 
 namespace LireinCore\YMLParser\Offer;
 
+use LireinCore\YMLParser\TYML;
+
 class Param
 {
+    use TYML;
+    
     /**
      * @var string
      */
@@ -26,10 +30,7 @@ class Param
     public function setAttributes($attributes)
     {
         foreach ($attributes as $name => $value) {
-            $setter = 'set' . str_replace(['-', '_'], '', $name);
-            if (method_exists($this, $setter)) {
-                $this->$setter($value);
-            }
+            $this->setField($name, $value);
         }
 
         return $this;

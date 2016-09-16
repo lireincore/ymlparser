@@ -2,8 +2,12 @@
 
 namespace LireinCore\YMLParser\Offer;
 
+use LireinCore\YMLParser\TYML;
+
 abstract class AOffer
 {
+    use TYML;
+
     /**
      * @var string
      */
@@ -178,21 +182,6 @@ abstract class AOffer
                     $this->setField($name, $value);
                 }
             }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $name
-     * @param mixed $value
-     * @return $this
-     */
-    public function setField($name, $value)
-    {
-        $setter = 'set' . str_replace(['-', '_'], '', $name);
-        if (method_exists($this, $setter)) {
-            $this->$setter($value);
         }
 
         return $this;
