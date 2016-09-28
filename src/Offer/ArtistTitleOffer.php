@@ -15,7 +15,7 @@ class ArtistTitleOffer extends AExtOffer
     protected $title;
 
     /**
-     * @var int
+     * @var string
      */
     protected $year;
 
@@ -56,7 +56,23 @@ class ArtistTitleOffer extends AExtOffer
     }
 
     /**
-     * @return string
+     * @return bool
+     */
+    public function isValid()
+    {
+        $isValid = parent::isValid();
+
+        if ($this->title === null)
+            $this->setError("Offer: missing required attribute 'title'");
+
+        if ($this->year !== null && !is_numeric($this->year))
+            $this->setError("Offer: incorrect value in attribute 'year'");
+
+        return $isValid && empty($this->errors);
+    }
+
+    /**
+     * @return string|null
      */
     public function getArtist()
     {
@@ -69,13 +85,13 @@ class ArtistTitleOffer extends AExtOffer
      */
     public function setArtist($value)
     {
-        $this->artist = (string)$value;
+        $this->artist = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getTitle()
     {
@@ -88,32 +104,32 @@ class ArtistTitleOffer extends AExtOffer
      */
     public function setTitle($value)
     {
-        $this->title = (string)$value;
+        $this->title = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getYear()
     {
-        return $this->year;
+        return $this->year === null ? null : (int)$this->year;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setYear($value)
     {
-        $this->year = (int)$value;
+        $this->year = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getMedia()
     {
@@ -126,13 +142,13 @@ class ArtistTitleOffer extends AExtOffer
      */
     public function setMedia($value)
     {
-        $this->media = (string)$value;
+        $this->media = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getStarring()
     {
@@ -145,13 +161,13 @@ class ArtistTitleOffer extends AExtOffer
      */
     public function setStarring($value)
     {
-        $this->starring = (string)$value;
+        $this->starring = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDirector()
     {
@@ -164,13 +180,13 @@ class ArtistTitleOffer extends AExtOffer
      */
     public function setDirector($value)
     {
-        $this->director = (string)$value;
+        $this->director = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getOriginalName()
     {
@@ -183,13 +199,13 @@ class ArtistTitleOffer extends AExtOffer
      */
     public function setOriginalName($value)
     {
-        $this->originalName = (string)$value;
+        $this->originalName = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCountry()
     {
@@ -202,7 +218,7 @@ class ArtistTitleOffer extends AExtOffer
      */
     public function setCountry($value)
     {
-        $this->country = (string)$value;
+        $this->country = $value;
 
         return $this;
     }

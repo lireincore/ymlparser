@@ -20,7 +20,7 @@ class TourOffer extends AExtOffer
     protected $region;
 
     /**
-     * @var int
+     * @var string
      */
     protected $days;
 
@@ -60,12 +60,12 @@ class TourOffer extends AExtOffer
     protected $transport;
 
     /**
-     * @var float
+     * @var string
      */
     protected $priceMin;
 
     /**
-     * @var float
+     * @var string
      */
     protected $priceMax;
 
@@ -88,6 +88,37 @@ class TourOffer extends AExtOffer
     }
 
     /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        $isValid = parent::isValid();
+
+        if ($this->name === null)
+            $this->setError("Offer: missing required attribute 'name'");
+
+        if ($this->days === null)
+            $this->setError("Offer: missing required attribute 'days'");
+        elseif (!is_numeric($this->days) || (int)$this->days <= 0)
+            $this->setError("Offer: incorrect value in attribute 'days'");
+
+        if ($this->included === null)
+            $this->setError("Offer: missing required attribute 'included'");
+
+        if ($this->transport === null)
+            $this->setError("Offer: missing required attribute 'transport'");
+
+        if ($this->priceMin !== null && (!is_numeric($this->priceMin) || (float)$this->priceMin <= 0))
+            $this->setError("Offer: incorrect value in attribute 'price_min'");
+
+        if ($this->priceMax !== null && (!is_numeric($this->priceMax) || ((float)$this->priceMax <= 0
+            || ($this->priceMin !== null && (float)$this->priceMin >= (float)$this->priceMax))))
+            $this->setError("Offer: incorrect value in attribute 'price_max'");
+
+        return $isValid && empty($this->errors);
+    }
+
+    /**
      * @param array $attrNode
      * @return $this
      */
@@ -104,7 +135,7 @@ class TourOffer extends AExtOffer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getWorldRegion()
     {
@@ -117,13 +148,13 @@ class TourOffer extends AExtOffer
      */
     public function setWorldRegion($value)
     {
-        $this->worldRegion = (string)$value;
+        $this->worldRegion = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCountry()
     {
@@ -136,13 +167,13 @@ class TourOffer extends AExtOffer
      */
     public function setCountry($value)
     {
-        $this->country = (string)$value;
+        $this->country = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getRegion()
     {
@@ -155,36 +186,36 @@ class TourOffer extends AExtOffer
      */
     public function setRegion($value)
     {
-        $this->region = (string)$value;
+        $this->region = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getDays()
     {
-        return $this->days;
+        return $this->days === null ? null : (int)$this->days;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setDays($value)
     {
-        $this->days = (int)$value;
+        $this->days = $value;
 
         return $this;
     }
 
     /**
-     * @return string[]
+     * @return string[]|null
      */
     public function getDataTours()
     {
-        return $this->dataTours;
+        return $this->dataTours ? $this->dataTours : null;
     }
 
     /**
@@ -206,13 +237,13 @@ class TourOffer extends AExtOffer
      */
     public function addDataTour($value)
     {
-        $this->dataTours[] = (string)$value;
+        $this->dataTours[] = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getName()
     {
@@ -225,13 +256,13 @@ class TourOffer extends AExtOffer
      */
     public function setName($value)
     {
-        $this->name = (string)$value;
+        $this->name = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getHotelStars()
     {
@@ -244,13 +275,13 @@ class TourOffer extends AExtOffer
      */
     public function setHotelStars($value)
     {
-        $this->hotelStars = (string)$value;
+        $this->hotelStars = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getRoom()
     {
@@ -263,13 +294,13 @@ class TourOffer extends AExtOffer
      */
     public function setRoom($value)
     {
-        $this->room = (string)$value;
+        $this->room = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getMeal()
     {
@@ -282,13 +313,13 @@ class TourOffer extends AExtOffer
      */
     public function setMeal($value)
     {
-        $this->meal = (string)$value;
+        $this->meal = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getIncluded()
     {
@@ -301,13 +332,13 @@ class TourOffer extends AExtOffer
      */
     public function setIncluded($value)
     {
-        $this->included = (string)$value;
+        $this->included = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getTransport()
     {
@@ -320,51 +351,51 @@ class TourOffer extends AExtOffer
      */
     public function setTransport($value)
     {
-        $this->transport = (string)$value;
+        $this->transport = $value;
 
         return $this;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getPriceMin()
     {
-        return $this->priceMin;
+        return $this->priceMin === null ? null : (float)$this->priceMin;
     }
 
     /**
-     * @param float $value
+     * @param string $value
      * @return $this
      */
     public function setPriceMin($value)
     {
-        $this->priceMin = (float)$value;
+        $this->priceMin = $value;
 
         return $this;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getPriceMax()
     {
-        return $this->priceMax;
+        return $this->priceMax === null ? null : (float)$this->priceMax;
     }
 
     /**
-     * @param float $value
+     * @param string $value
      * @return $this
      */
     public function setPriceMax($value)
     {
-        $this->priceMax = (float)$value;
+        $this->priceMax = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getOptions()
     {
@@ -377,7 +408,7 @@ class TourOffer extends AExtOffer
      */
     public function setOptions($value)
     {
-        $this->options = (string)$value;
+        $this->options = $value;
 
         return $this;
     }

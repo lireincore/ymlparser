@@ -41,7 +41,7 @@ class AudioBookOffer extends ABookOffer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getPerformedBy()
     {
@@ -54,13 +54,13 @@ class AudioBookOffer extends ABookOffer
      */
     public function setPerformedBy($value)
     {
-        $this->performedBy = (string)$value;
+        $this->performedBy = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getPerformanceType()
     {
@@ -73,13 +73,13 @@ class AudioBookOffer extends ABookOffer
      */
     public function setPerformanceType($value)
     {
-        $this->performanceType = (string)$value;
+        $this->performanceType = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getStorage()
     {
@@ -92,13 +92,13 @@ class AudioBookOffer extends ABookOffer
      */
     public function setStorage($value)
     {
-        $this->storage = (string)$value;
+        $this->storage = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getFormat()
     {
@@ -111,13 +111,13 @@ class AudioBookOffer extends ABookOffer
      */
     public function setFormat($value)
     {
-        $this->format = (string)$value;
+        $this->format = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getRecordingLength()
     {
@@ -130,7 +130,7 @@ class AudioBookOffer extends ABookOffer
      */
     public function setRecordingLength($value)
     {
-        $this->recordingLength = (string)$value;
+        $this->recordingLength = $value;
 
         return $this;
     }

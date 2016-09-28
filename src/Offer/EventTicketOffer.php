@@ -30,12 +30,12 @@ class EventTicketOffer extends AExtOffer
     protected $date;
 
     /**
-     * @var bool
+     * @var string
      */
     protected $isPremiere;
 
     /**
-     * @var bool
+     * @var string
      */
     protected $isKids;
 
@@ -51,7 +51,32 @@ class EventTicketOffer extends AExtOffer
     }
 
     /**
-     * @return string
+     * @return bool
+     */
+    public function isValid()
+    {
+        $isValid = parent::isValid();
+
+        if ($this->name === null)
+            $this->setError("Offer: missing required attribute 'name'");
+        
+        if ($this->place === null)
+            $this->setError("Offer: missing required attribute 'place'");
+        
+        if ($this->date === null)
+            $this->setError("Offer: missing required attribute 'date'");
+
+        if ($this->isPremiere !== null && $this->isPremiere !== '0' && $this->isPremiere !== '1')
+            $this->setError("Offer: incorrect value in attribute 'is_premiere'");
+
+        if ($this->isKids !== null && $this->isKids !== '0' && $this->isKids !== '1')
+            $this->setError("Offer: incorrect value in attribute 'is_kids'");
+
+        return $isValid && empty($this->errors);
+    }
+
+    /**
+     * @return string|null
      */
     public function getName()
     {
@@ -64,13 +89,13 @@ class EventTicketOffer extends AExtOffer
      */
     public function setName($value)
     {
-        $this->name = (string)$value;
+        $this->name = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getPlace()
     {
@@ -83,13 +108,13 @@ class EventTicketOffer extends AExtOffer
      */
     public function setPlace($value)
     {
-        $this->place = (string)$value;
+        $this->place = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getHall()
     {
@@ -102,13 +127,13 @@ class EventTicketOffer extends AExtOffer
      */
     public function setHall($value)
     {
-        $this->hall = (string)$value;
+        $this->hall = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getHallPart()
     {
@@ -121,13 +146,13 @@ class EventTicketOffer extends AExtOffer
      */
     public function setHallPart($value)
     {
-        $this->hallPart = (string)$value;
+        $this->hallPart = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDate()
     {
@@ -140,45 +165,45 @@ class EventTicketOffer extends AExtOffer
      */
     public function setDate($value)
     {
-        $this->date = (string)$value;
+        $this->date = $value;
 
         return $this;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getIsPremiere()
     {
-        return $this->isPremiere;
+        return $this->isPremiere === null ? null : (bool)$this->isPremiere;
     }
 
     /**
-     * @param bool $value
+     * @param string $value
      * @return $this
      */
     public function setIsPremiere($value)
     {
-        $this->isPremiere = (bool)$value;
+        $this->isPremiere = $value;
 
         return $this;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getIsKids()
     {
-        return $this->isKids;
+        return $this->isKids === null ? null : (bool)$this->isKids;
     }
 
     /**
-     * @param bool $value
+     * @param string $value
      * @return $this
      */
     public function setIsKids($value)
     {
-        $this->isKids = (bool)$value;
+        $this->isKids = $value;
 
         return $this;
     }

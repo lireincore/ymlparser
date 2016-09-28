@@ -5,9 +5,12 @@ namespace LireinCore\YMLParser;
 class DeliveryOption
 {
     use TYML;
+    use TError;
+
+    const DEFAULT_ORDER_BEFORE = 24;
 
     /**
-     * @var int
+     * @var string
      */
     protected $cost;
 
@@ -17,9 +20,28 @@ class DeliveryOption
     protected $days;
 
     /**
-     * @var int
+     * @var string
      */
     protected $orderBefore;
+
+    /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        if ($this->cost === null)
+            $this->setError("DeliveryOption: missing required attribute 'cost'");
+        elseif (!is_numeric($this->cost) || ((int)$this->cost) < 0)
+            $this->setError("DeliveryOption: incorrect value in attribute 'cost'");
+
+        if ($this->days === null)
+            $this->setError("DeliveryOption: missing required attribute 'days'");
+
+        if ($this->orderBefore !== null && (!is_numeric($this->orderBefore) || (int)$this->orderBefore < 0 || (int)$this->orderBefore > 24))
+            $this->setError("DeliveryOption: incorrect value in attribute 'order-before'");
+
+        return empty($this->errors);
+    }
 
     /**
      * @param array $attributes
@@ -35,26 +57,26 @@ class DeliveryOption
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getCost()
     {
-        return $this->cost;
+        return $this->cost === null ? null : (int)$this->cost;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setCost($value)
     {
-        $this->cost = (int)$value;
+        $this->cost = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDays()
     {
@@ -67,26 +89,26 @@ class DeliveryOption
      */
     public function setDays($value)
     {
-        $this->days = (string)$value;
+        $this->days = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getOrderBefore()
     {
-        return $this->orderBefore;
+        return $this->orderBefore === null ? null : (int)$this->orderBefore;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setOrderBefore($value)
     {
-        $this->orderBefore = (int)$value;
+        $this->orderBefore = $value;
 
         return $this;
     }

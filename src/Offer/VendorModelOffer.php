@@ -21,7 +21,23 @@ class VendorModelOffer extends AMainOffer
     }
 
     /**
-     * @return string
+     * @return bool
+     */
+    public function isValid()
+    {
+        $isValid = parent::isValid();
+
+        if ($this->model === null)
+            $this->setError("Offer: missing required attribute 'model'");
+
+        if ($this->vendor === null)
+            $this->setError("Offer: missing required attribute 'vendor'");
+
+        return $isValid && empty($this->errors);
+    }
+
+    /**
+     * @return string|null
      */
     public function getTypePrefix()
     {
@@ -34,7 +50,7 @@ class VendorModelOffer extends AMainOffer
      */
     public function setTypePrefix($value)
     {
-        $this->typePrefix = (string)$value;
+        $this->typePrefix = $value;
 
         return $this;
     }

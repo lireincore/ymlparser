@@ -4,16 +4,18 @@ namespace LireinCore\YMLParser\Offer;
 
 abstract class AMainOffer extends AExtOffer
 {
+    const DEFAULT_FROM = false;
+
     /**
-     * @var int
+     * @var string
      */
     protected $groupId;
 
     /**
      * price[from]
-     * @var bool
+     * @var string
      */
-    protected $from = false;
+    protected $from;
 
     /**
      * @var string
@@ -42,6 +44,22 @@ abstract class AMainOffer extends AExtOffer
     }
 
     /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        $isValid = parent::isValid();
+
+        if ($this->groupId !== null && !is_numeric($this->groupId))
+            $this->setError("Offer: incorrect value in attribute 'group_id'");
+
+        if ($this->from !== null && $this->from !== 'true' && $this->from !== 'false')
+            $this->setError("Price: incorrect value in attribute 'from'");
+
+        return $isValid && empty($this->errors);
+    }
+
+    /**
      * @param array $attrNode
      * @return $this
      */
@@ -57,45 +75,45 @@ abstract class AMainOffer extends AExtOffer
     }*/
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getGroupId()
     {
-        return $this->groupId;
+        return $this->groupId === null ? null : (int)$this->groupId;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setGroupId($value)
     {
-        $this->groupId = (int)$value;
+        $this->groupId = $value;
 
         return $this;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getFrom()
     {
-        return $this->from;
+        return $this->from === null ? null : ($this->from === 'false' ? false : (bool)$this->from);
     }
 
     /**
-     * @param bool $value
+     * @param string $value
      * @return $this
      */
     public function setFrom($value)
     {
-        $this->from = $value === 'false' ? false : (bool)$value;
+        $this->from = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getVendor()
     {
@@ -108,13 +126,13 @@ abstract class AMainOffer extends AExtOffer
      */
     public function setVendor($value)
     {
-        $this->vendor = (string)$value;
+        $this->vendor = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getVendorCode()
     {
@@ -127,13 +145,13 @@ abstract class AMainOffer extends AExtOffer
      */
     public function setVendorCode($value)
     {
-        $this->vendorCode = (string)$value;
+        $this->vendorCode = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getModel()
     {
@@ -146,7 +164,7 @@ abstract class AMainOffer extends AExtOffer
      */
     public function setModel($value)
     {
-        $this->model = (string)$value;
+        $this->model = $value;
 
         return $this;
     }

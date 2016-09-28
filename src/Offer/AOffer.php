@@ -2,11 +2,12 @@
 
 namespace LireinCore\YMLParser\Offer;
 
-use LireinCore\YMLParser\TYML;
-
 abstract class AOffer
 {
-    use TYML;
+    use \LireinCore\YMLParser\TYML;
+    use \LireinCore\YMLParser\TError;
+
+    const DEFAULT_CPA = 1;
 
     /**
      * @var string
@@ -14,17 +15,17 @@ abstract class AOffer
     protected $id;
 
     /**
-     * @var int
+     * @var string
      */
     protected $bid;
 
     /**
-     * @var int
+     * @var string
      */
     protected $cbid;
 
     /**
-     * @var bool
+     * @var string
      */
     protected $available;
 
@@ -34,14 +35,14 @@ abstract class AOffer
     protected $url;
 
     /**
-     * @var float
+     * @var string
      */
     protected $price;
 
     /**
-     * @var float
+     * @var string
      */
-    protected $oldPrice;
+    protected $oldprice;
 
     /**
      * @var string
@@ -49,7 +50,7 @@ abstract class AOffer
     protected $currencyId;
 
     /**
-     * @var int
+     * @var string
      */
     protected $categoryId;
 
@@ -59,17 +60,17 @@ abstract class AOffer
     protected $pictures = [];
 
     /**
-     * @var bool
+     * @var string
      */
     protected $store;
 
     /**
-     * @var bool
+     * @var string
      */
     protected $pickup;
 
     /**
-     * @var bool
+     * @var string
      */
     protected $delivery;
 
@@ -99,7 +100,7 @@ abstract class AOffer
     protected $barcodes = [];
 
     /**
-     * @var int
+     * @var string
      */
     protected $cpa;
 
@@ -109,7 +110,7 @@ abstract class AOffer
     protected $expiry;
 
     /**
-     * @var float
+     * @var string
      */
     protected $weight;
 
@@ -136,6 +137,95 @@ abstract class AOffer
             'pickup', 'store', 'outlets', 'description', 'sales_notes', 'country_of_origin',
             'barcode', 'cpa', 'param', 'expiry', 'weight', 'dimensions'
         ];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        if ($this->id === null)
+            $this->setError("Offer: missing required attribute 'id'");
+        elseif (!$this->id)
+            $this->setError("Offer: incorrect value in attribute 'id'");
+
+        if ($this->bid !== null && (!is_numeric($this->bid) || (int)$this->bid <= 0))
+            $this->setError("Offer: incorrect value in attribute 'bid'");
+
+        if ($this->cbid !== null && (!is_numeric($this->cbid) || (int)$this->cbid <= 0))
+            $this->setError("Offer: incorrect value in attribute 'cbid'");
+
+        if ($this->available === null) {
+            if ($this->getPickup())
+                $this->setError("Offer: attribute 'available' is required when 'pickup' is true");
+        }
+        elseif ($this->available !== 'true' && $this->available !== 'false')
+            $this->setError("Offer: incorrect value in attribute 'available'");
+
+        if ($this->price === null)
+            $this->setError("Offer: missing required attribute 'price'");
+        elseif (!is_numeric($this->price) || (float)$this->price <= 0)
+            $this->setError("Offer: incorrect value in attribute 'price'");
+
+        if ($this->oldprice !== null && (!is_numeric($this->oldprice) || (float)$this->oldprice <= (float)$this->price))
+            $this->setError("Offer: incorrect value in attribute 'oldprice'");
+        
+        if ($this->currencyId === null)
+            $this->setError("Offer: missing required attribute 'currencyId'");
+        elseif (!$this->currencyId)
+            $this->setError("Offer: incorrect value in attribute 'currencyId'");
+
+        if ($this->categoryId === null)
+            $this->setError("Offer: missing required attribute 'categoryId'");
+        elseif (!$this->categoryId)
+            $this->setError("Offer: incorrect value in attribute 'categoryId'");
+
+        if ($this->store !== null && $this->store !== 'true' && $this->store !== 'false')
+            $this->setError("Offer: incorrect value in attribute 'store'");
+
+        if ($this->pickup !== null && $this->pickup !== 'true' && $this->pickup !== 'false')
+            $this->setError("Offer: incorrect value in attribute 'pickup'");
+
+        if ($this->delivery !== null && $this->delivery !== 'true' && $this->delivery !== 'false')
+            $this->setError("Offer: incorrect value in attribute 'delivery'");
+
+        if ($this->weight !== null && (!is_numeric($this->weight) || (float)$this->weight <= 0))
+            $this->setError("Offer: incorrect value in attribute 'weight'");
+
+        $subIsValid = true;
+        if ($this->outlets) {
+            foreach ($this->outlets as $outlet) {
+                if (!$outlet->isValid()) $subIsValid = false;
+            }
+        }
+        if ($this->params) {
+            foreach ($this->params as $param) {
+                if (!$param->isValid()) $subIsValid = false;
+            }
+        }
+
+        return empty($this->errors) && $subIsValid;
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrors()
+    {
+        $errors = $this->errors;
+
+        if ($this->outlets) {
+            foreach ($this->outlets as $outlet) {
+                $errors = array_merge($errors, $outlet->getErrors());
+            }
+        }
+        if ($this->params) {
+            foreach ($this->params as $param) {
+                $errors = array_merge($errors, $param->getErrors());
+            }
+        }
+
+        return $errors;
     }
 
     /**
@@ -188,7 +278,7 @@ abstract class AOffer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getId()
     {
@@ -201,70 +291,70 @@ abstract class AOffer
      */
     public function setId($value)
     {
-        $this->id = (string)$value;
+        $this->id = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getBid()
     {
-        return $this->bid;
+        return $this->bid === null ? null : (int)$this->bid;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setBid($value)
     {
-        $this->bid = (int)$value;
+        $this->bid = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getCbid()
     {
-        return $this->cbid;
+        return $this->cbid === null ? null : (int)$this->cbid;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setCbid($value)
     {
-        $this->cbid = (int)$value;
+        $this->cbid = $value;
 
         return $this;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getAvailable()
     {
-        return $this->available;
+        return $this->available === null ? null : ($this->available === 'false' ? false : (bool)$this->available);
     }
 
     /**
-     * @param bool $value
+     * @param string $value
      * @return $this
      */
     public function setAvailable($value)
     {
-        $this->available = $value === 'false' ? false : (bool)$value;
+        $this->available = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getUrl()
     {
@@ -277,51 +367,51 @@ abstract class AOffer
      */
     public function setUrl($value)
     {
-        $this->url = (string)$value;
+        $this->url = $value;
 
         return $this;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getPrice()
     {
-        return $this->price;
+        return $this->price === null ? null : (float)$this->price;
     }
 
     /**
-     * @param float $value
+     * @param string $value
      * @return $this
      */
     public function setPrice($value)
     {
-        $this->price = (float)$value;
+        $this->price = $value;
 
         return $this;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getOldPrice()
+    public function getOldprice()
     {
-        return $this->oldPrice;
+        return $this->oldprice === null ? null : (float)$this->oldprice;
     }
 
     /**
-     * @param float $value
+     * @param string $value
      * @return $this
      */
-    public function setOldPrice($value)
+    public function setOldprice($value)
     {
-        $this->oldPrice = (float)$value;
+        $this->oldprice = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCurrencyId()
     {
@@ -334,36 +424,36 @@ abstract class AOffer
      */
     public function setCurrencyId($value)
     {
-        $this->currencyId = (string)$value;
+        $this->currencyId = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getCategoryId()
     {
-        return $this->categoryId;
+        return $this->categoryId === null ? null : (int)$this->categoryId;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setCategoryId($value)
     {
-        $this->categoryId = (int)$value;
+        $this->categoryId = $value;
 
         return $this;
     }
 
     /**
-     * @return string[]
+     * @return string[]|null
      */
     public function getPictures()
     {
-        return $this->pictures;
+        return $this->pictures ? $this->pictures : null;
     }
 
     /**
@@ -385,74 +475,74 @@ abstract class AOffer
      */
     public function addPicture($value)
     {
-        $this->pictures[] = (string)$value;
+        $this->pictures[] = $value;
 
         return $this;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getStore()
     {
-        return $this->store;
+        return $this->store === null ? null : ($this->store === 'false' ? false : (bool)$this->store);
     }
 
     /**
-     * @param bool $value
+     * @param string $value
      * @return $this
      */
     public function setStore($value)
     {
-        $this->store = $value === 'false' ? false : (bool)$value;
+        $this->store = $value;
 
         return $this;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getPickup()
     {
-        return $this->pickup;
+        return $this->pickup === null ? null : ($this->pickup === 'false' ? false : (bool)$this->pickup);
     }
 
     /**
-     * @param bool $value
+     * @param string $value
      * @return $this
      */
     public function setPickup($value)
     {
-        $this->pickup = $value === 'false' ? false : (bool)$value;
+        $this->pickup = $value;
 
         return $this;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getDelivery()
     {
-        return $this->delivery;
+        return $this->delivery === null ? null : ($this->delivery === 'false' ? false : (bool)$this->delivery);
     }
 
     /**
-     * @param bool $value
+     * @param string $value
      * @return $this
      */
     public function setDelivery($value)
     {
-        $this->delivery = $value === 'false' ? false : (bool)$value;
+        $this->delivery = $value;
 
         return $this;
     }
 
     /**
-     * @return Outlet[]
+     * @return Outlet[]|null
      */
     public function getOutlets()
     {
-        return $this->outlets;
+        return $this->outlets ? $this->outlets : null;
     }
 
     /**
@@ -480,7 +570,7 @@ abstract class AOffer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDescription()
     {
@@ -493,13 +583,13 @@ abstract class AOffer
      */
     public function setDescription($value)
     {
-        $this->description = (string)$value;
+        $this->description = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getSalesNotes()
     {
@@ -512,13 +602,13 @@ abstract class AOffer
      */
     public function setSalesNotes($value)
     {
-        $this->salesNotes = (string)$value;
+        $this->salesNotes = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCountryOfOrigin()
     {
@@ -531,17 +621,17 @@ abstract class AOffer
      */
     public function setCountryOfOrigin($value)
     {
-        $this->countryOfOrigin = (string)$value;
+        $this->countryOfOrigin = $value;
 
         return $this;
     }
 
     /**
-     * @return string[]
+     * @return string[]|null
      */
     public function getBarcodes()
     {
-        return $this->barcodes;
+        return $this->barcodes ? $this->barcodes : null;
     }
 
     /***
@@ -563,32 +653,32 @@ abstract class AOffer
      */
     public function addBarcode($value)
     {
-        $this->barcodes[] = (string)$value;
+        $this->barcodes[] = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return bool|null
      */
     public function getCpa()
     {
-        return $this->cpa;
+        return $this->cpa === null ? null : ($this->cpa === '1' ? true : false);
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setCpa($value)
     {
-        $this->cpa = (int)$value;
+        $this->cpa = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getExpiry()
     {
@@ -601,32 +691,32 @@ abstract class AOffer
      */
     public function setExpiry($value)
     {
-        $this->expiry = (string)$value;
+        $this->expiry = $value;
 
         return $this;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getWeight()
     {
-        return $this->weight;
+        return $this->weight === null ? null : (float)$this->weight;
     }
 
     /**
-     * @param float $value
+     * @param string $value
      * @return $this
      */
     public function setWeight($value)
     {
-        $this->weight = (float)$value;
+        $this->weight = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDimensions()
     {
@@ -639,17 +729,17 @@ abstract class AOffer
      */
     public function setDimensions($value)
     {
-        $this->dimensions = (string)$value;
+        $this->dimensions = $value;
 
         return $this;
     }
 
     /**
-     * @return Param[]
+     * @return Param[]|null
      */
     public function getParams()
     {
-        return $this->params;
+        return $this->params ? $this->params : null;
     }
 
     /**

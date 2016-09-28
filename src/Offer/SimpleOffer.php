@@ -21,7 +21,20 @@ class SimpleOffer extends AMainOffer
     }
 
     /**
-     * @return string
+     * @return bool
+     */
+    public function isValid()
+    {
+        $isValid = parent::isValid();
+
+        if ($this->name === null)
+            $this->setError("Offer: missing required attribute 'name'");
+
+        return $isValid && empty($this->errors);
+    }
+
+    /**
+     * @return string|null
      */
     public function getName()
     {
@@ -34,7 +47,7 @@ class SimpleOffer extends AMainOffer
      */
     public function setName($value)
     {
-        $this->name = (string)$value;
+        $this->name = $value;
 
         return $this;
     }

@@ -8,7 +8,7 @@ trait TYML
      * @param mixed $value
      * @return $this
      */
-    public function setField($name, $value)
+    protected function setField($name, $value)
     {
         $setter = 'set' . str_replace(['-', '_'], '', $name);
         if (method_exists($this, $setter)) {
@@ -21,21 +21,26 @@ trait TYML
     /**
      * @return array
      */
-    public function getData()
+    protected function toArray()
     {
         $array = [];
 
         foreach ($this as $key => $value) {
-            if (!is_null($value)) {
-                if (is_object($value) && method_exists($value, 'getData')) {
-                    $array[$key] = $value->getData();
+            if (is_object($value) && method_exists($value, 'getData')) {
+                $array[$key] = $value->getData();
+            }
+            elseif (is_array($value)) {
+                if (!empty($value)) {
+                    $array[$key] = $this->getArray($value);
                 }
-                elseif (is_array($value)) {
-                    if (!empty($value)) {
-                        $array[$key] = $this->getArray($value);
-                    }
+            }
+            else {
+                $getter = 'get' . $key;
+                if (method_exists($this, $getter)) {
+                    $getValue = $this->$getter();
+                    if ($getValue !== null) $array[$key] = $getValue;
                 }
-                else {
+                elseif ($value !== null) {
                     $array[$key] = $value;
                 }
             }
@@ -48,7 +53,7 @@ trait TYML
      * @param array $value
      * @return array
      */
-    private function getArray($value)
+    protected function getArray($value)
     {
         $subarray = [];
 
@@ -60,7 +65,14 @@ trait TYML
                 $subarray[$subkey] = $this->getArray($subvalue);
             }
             else {
-                $subarray[$subkey] = $subvalue;
+                $getter = 'get' . $subkey;
+                if (method_exists($this, $getter)) {
+                    $getValue = $this->$getter();
+                    if ($getValue !== null) $subarray[$subkey] = $getValue;
+                }
+                elseif ($subvalue !== null) {
+                    $subarray[$subkey] = $subvalue;
+                }
             }
         }
 

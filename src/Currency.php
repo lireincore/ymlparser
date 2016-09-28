@@ -5,19 +5,9 @@ namespace LireinCore\YMLParser;
 class Currency
 {
     use TYML;
+    use TError;
 
-    const CURRENCY_RUR = 'RUR';
-    const CURRENCY_RUB = 'RUB';
-    const CURRENCY_UAH = 'UAH';
-    const CURRENCY_BYN = 'BYN';
-    const CURRENCY_KZT = 'KZT';
-    const CURRENCY_USD = 'USD';
-    const CURRENCY_EUR = 'EUR';
-
-    const EXCHANGE_RATE_CBRF = 'CBRF';
-    const EXCHANGE_RATE_NBU = 'NBU';
-    const EXCHANGE_RATE_NBK = 'NBK';
-    const EXCHANGE_RATE_CB = 'CB';
+    const DEFAULT_PLUS = 0;
 
     /**
      * @var string
@@ -25,14 +15,35 @@ class Currency
     protected $id;
 
     /**
-     * @var float|string
+     * @var string
      */
     protected $rate;
 
     /**
-     * @var int
+     * @var string
      */
-    protected $plus = 0;
+    protected $plus;
+
+    /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        if ($this->id === null)
+            $this->setError("Currency: missing required attribute 'id'");
+        elseif (!in_array($this->id, ['RUR', 'RUB', 'UAH', 'BYN', 'BYR', 'KZT', 'USD', 'EUR']))
+            $this->setError("Currency: incorrect value in attribute 'id'");
+
+        if ($this->rate === null)
+            $this->setError("Currency: missing required attribute 'rate'");
+        elseif (!(in_array($this->rate, ['CBRF', 'NBU', 'NBK', 'CB']) || (is_numeric($this->rate) && (float)$this->rate > 0)))
+            $this->setError("Currency: incorrect value in attribute 'rate'");
+
+        if ($this->plus !== null && (!is_numeric($this->rate) || (int)$this->plus < 0))
+            $this->setError("Currency: incorrect value in attribute 'plus'");
+
+        return empty($this->errors);
+    }
 
     /**
      * @param array $attributes
@@ -48,7 +59,7 @@ class Currency
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getId()
     {
@@ -61,45 +72,45 @@ class Currency
      */
     public function setId($value)
     {
-        $this->id = (string)$value;
+        $this->id = $value;
 
         return $this;
     }
 
     /**
-     * @return float|string
+     * @return float|string|null
      */
     public function getRate()
     {
-        return $this->rate;
+        return is_numeric($this->rate) ? (float)$this->rate : $this->rate;
     }
 
     /**
-     * @param float|string $value
+     * @param string $value
      * @return $this
      */
     public function setRate($value)
     {
-        $this->rate = is_numeric($value) ? (float)$value : (string)$value;
+        $this->rate = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getPlus()
     {
-        return $this->plus;
+        return $this->plus === null ? null : (int)$this->plus;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setPlus($value)
     {
-        $this->plus = (int)$value;
+        $this->plus = $value;
 
         return $this;
     }

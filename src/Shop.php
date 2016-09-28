@@ -4,9 +4,10 @@ namespace LireinCore\YMLParser;
 
 class Shop
 {
-    use TYML {
-        getData as private getDataT;
-    }
+    use TYML;
+    use TError;
+
+    const DEFAULT_CPA = 1;
 
     /**
      * @var string
@@ -60,19 +61,19 @@ class Shop
 
     /**
      * Attribute is deprecated
-     * @var int
+     * @var string
      */
     protected $localDeliveryCost;
 
     /**
-     * @var int
+     * @var string
      */
     protected $cpa;
 
     /**
      * @var int
      */
-    protected $offersCount;
+    protected $offersCount = 0;
 
     /**
      * @return array
@@ -85,6 +86,84 @@ class Shop
             'email', 'currencies', 'categories', 'delivery-options',
             'local_delivery_cost', 'cpa',
         ];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        if ($this->offersCount == 0)
+            $this->setError("Shop: no offers");
+
+        if ($this->name === null)
+            $this->setError("Shop: missing required attribute 'name'");
+        elseif (!$this->name)
+            $this->setError("Shop: incorrect value in attribute 'name'");
+
+        if ($this->company === null)
+            $this->setError("Shop: missing required attribute 'company'");
+        elseif (!$this->company)
+            $this->setError("Shop: incorrect value in attribute 'company'");
+
+        if ($this->url === null)
+            $this->setError("Shop: missing required attribute 'url'");
+        elseif (!$this->url)
+            $this->setError("Shop: incorrect value in attribute 'url'");
+
+        if (!$this->currencies)
+            $this->setError("Shop: missing required attribute 'currencies'");
+
+        if (!$this->categories)
+            $this->setError("Shop: missing required attribute 'categories'");
+
+        if ($this->localDeliveryCost !== null && (!is_numeric($this->localDeliveryCost) || ((int)$this->localDeliveryCost) < 0))
+            $this->setError("Shop: incorrect value in attribute 'local_delivery_cost'");
+
+        $subIsValid = true;
+        if ($this->currencies) {
+            foreach ($this->currencies as $currency) {
+                if (!$currency->isValid()) $subIsValid = false;
+            }
+        }
+        if ($this->categories) {
+            foreach ($this->categories as $category) {
+                if (!$category->isValid()) $subIsValid = false;
+            }
+        }
+        if ($this->deliveryOptions) {
+            foreach ($this->deliveryOptions as $deliveryOption) {
+                if (!$deliveryOption->isValid()) $subIsValid = false;
+            }
+        }
+
+        return empty($this->errors) && $subIsValid;
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrors()
+    {
+        $errors = $this->errors;
+
+        if ($this->currencies) {
+            foreach ($this->currencies as $currency) {
+                $errors = array_merge($errors, $currency->getErrors());
+            }
+        }
+        if ($this->categories) {
+            foreach ($this->categories as $category) {
+                $errors = array_merge($errors, $category->getErrors());
+            }
+        }
+        if ($this->deliveryOptions) {
+            foreach ($this->deliveryOptions as $deliveryOption) {
+                $errors = array_merge($errors, $deliveryOption->getErrors());
+            }
+        }
+
+        return $errors;
     }
 
     /**
@@ -138,14 +217,15 @@ class Shop
      */
     public function getData()
     {
-        $data = $this->getDataT();
+        $data = $this->toArray();
+        unset($data['errors']);
         unset($data['offersCount']);
 
         return $data;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getName()
     {
@@ -158,13 +238,13 @@ class Shop
      */
     public function setName($value)
     {
-        $this->name = (string)$value;
+        $this->name = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCompany()
     {
@@ -177,13 +257,13 @@ class Shop
      */
     public function setCompany($value)
     {
-        $this->company = (string)$value;
+        $this->company = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getUrl()
     {
@@ -196,13 +276,13 @@ class Shop
      */
     public function setUrl($value)
     {
-        $this->url = (string)$value;
+        $this->url = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getPlatform()
     {
@@ -215,13 +295,13 @@ class Shop
      */
     public function setPlatform($value)
     {
-        $this->platform = (string)$value;
+        $this->platform = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getVersion()
     {
@@ -234,13 +314,13 @@ class Shop
      */
     public function setVersion($value)
     {
-        $this->version = (string)$value;
+        $this->version = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getAgency()
     {
@@ -253,13 +333,13 @@ class Shop
      */
     public function setAgency($value)
     {
-        $this->agency = (string)$value;
+        $this->agency = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getEmail()
     {
@@ -272,7 +352,7 @@ class Shop
      */
     public function setEmail($value)
     {
-        $this->email = (string)$value;
+        $this->email = $value;
 
         return $this;
     }
@@ -287,11 +367,11 @@ class Shop
     }
 
     /**
-     * @return Currency[]
+     * @return Currency[]|null
      */
     public function getCurrencies()
     {
-        return $this->currencies;
+        return $this->currencies ? $this->currencies : null;
     }
 
     /**
@@ -319,7 +399,7 @@ class Shop
     }
 
     /**
-     * @param int $id
+     * @param string $id
      * @return Category|null
      */
     public function getCategory($id)
@@ -328,7 +408,7 @@ class Shop
     }
 
     /**
-     * @param int $id
+     * @param string $id
      * @return Category|null
      */
     public function getCategoryParent($id)
@@ -343,8 +423,8 @@ class Shop
     }
 
     /**
-     * @param int $id
-     * @return Category[]
+     * @param string $id
+     * @return Category[]|null
      */
     public function getCategoryHierarchy($id)
     {
@@ -364,11 +444,11 @@ class Shop
     }
 
     /**
-     * @return Category[]
+     * @return Category[]|null
      */
     public function getCategories()
     {
-        return $this->categories;
+        return $this->categories ? $this->categories : null;
     }
 
     /**
@@ -396,11 +476,11 @@ class Shop
     }
 
     /**
-     * @return DeliveryOption[]
+     * @return DeliveryOption[]|null
      */
     public function getDeliveryOptions()
     {
-        return $this->deliveryOptions;
+        return $this->deliveryOptions ? $this->deliveryOptions : null;
     }
 
     /**
@@ -428,39 +508,39 @@ class Shop
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getLocalDeliveryCost()
     {
-        return $this->localDeliveryCost;
+        return $this->localDeliveryCost === null ? null : (int)$this->localDeliveryCost;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setLocalDeliveryCost($value)
     {
-        $this->localDeliveryCost = (int)$value;
+        $this->localDeliveryCost = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return bool|null
      */
     public function getCpa()
     {
-        return $this->cpa;
+        return $this->cpa === null ? null : ($this->cpa === '1' ? true : false);
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setCpa($value)
     {
-        $this->cpa = (int)$value;
+        $this->cpa = $value;
 
         return $this;
     }
@@ -479,7 +559,7 @@ class Shop
      */
     public function setOffersCount($value)
     {
-        $this->offersCount = (int)$value;
+        $this->offersCount = $value;
 
         return $this;
     }

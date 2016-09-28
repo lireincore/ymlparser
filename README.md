@@ -1,10 +1,13 @@
 # YML (Yandex Market Language) parser
 
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Latest Stable Version](https://poser.pugx.org/lireincore/ymlparser/v/stable)](https://packagist.org/packages/lireincore/ymlparser)
+[![Total Downloads](https://poser.pugx.org/lireincore/ymlparser/downloads)](https://packagist.org/packages/lireincore/ymlparser)
+[![License](https://poser.pugx.org/lireincore/ymlparser/license)](https://packagist.org/packages/lireincore/ymlparser)
 
 ## About
 
-[YML (Yandex Market Language)](https://yandex.ru/support/partnermarket/yml/about-yml.xml) parser for PHP.
+[YML (Yandex Market Language)](https://yandex.ru/support/partnermarket/yml/about-yml.xml) streaming parser with validation for PHP.
+Based on XMLReader. Suitable for large files.
 
 ## Install
 
@@ -26,12 +29,22 @@ try {
     $yml->parse($filepath);
     $date = $yml->getDate();
     $shop = $yml->getShop();
-    $offersCount = $shop->getOffersCount();
-    $shopData = $shop->getData();
-    /**@var \LireinCore\YMLParser\Offer\AOffer $offer*/
-    foreach ($yml->getOffers() as $offer) {
-        $offerCategoryHierarchy = $shop->getCategoryHierarchy($offer->getCategoryId);
-        $offerData = $offer->getData();
+    if ($shop->isValid) {
+        $offersCount = $shop->getOffersCount();
+        $shopData = $shop->getData();
+        //...
+        foreach ($yml->getOffers() as $offer) {
+            if ($offer->isValid) {
+                $offerCategoryHierarchy = $shop->getCategoryHierarchy($offer->getCategoryId);
+                $offerData = $offer->getData();
+                //...
+            } else {
+                var_dump($offer->getErrors());
+                //...
+            }
+        }
+    } else {
+        var_dump($shop->getErrors());
         //...
     }
 } catch (\Exception $e) {

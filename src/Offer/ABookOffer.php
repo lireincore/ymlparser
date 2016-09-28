@@ -25,7 +25,7 @@ abstract class ABookOffer extends AExtOffer
     protected $series;
 
     /**
-     * @var int
+     * @var string
      */
     protected $year;
 
@@ -35,12 +35,12 @@ abstract class ABookOffer extends AExtOffer
     protected $ISBN;
 
     /**
-     * @var int
+     * @var string
      */
     protected $volume;
 
     /**
-     * @var int
+     * @var string
      */
     protected $part;
 
@@ -66,7 +66,29 @@ abstract class ABookOffer extends AExtOffer
     }
 
     /**
-     * @return string
+     * @return bool
+     */
+    public function isValid()
+    {
+        $isValid = parent::isValid();
+
+        if ($this->name === null)
+            $this->setError("Offer: missing required attribute 'name'");
+
+        if ($this->year !== null && !is_numeric($this->year))
+            $this->setError("Offer: incorrect value in attribute 'year'");
+
+        if ($this->volume !== null && (!is_numeric($this->volume) || (int)$this->volume <= 0))
+            $this->setError("Offer: incorrect value in attribute 'volume'");
+
+        if ($this->part !== null && (!is_numeric($this->part) || (int)$this->part <= 0))
+            $this->setError("Offer: incorrect value in attribute 'part'");
+
+        return $isValid && empty($this->errors);
+    }
+
+    /**
+     * @return string|null
      */
     public function getAuthor()
     {
@@ -79,13 +101,13 @@ abstract class ABookOffer extends AExtOffer
      */
     public function setAuthor($value)
     {
-        $this->author = (string)$value;
+        $this->author = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getName()
     {
@@ -98,13 +120,13 @@ abstract class ABookOffer extends AExtOffer
      */
     public function setName($value)
     {
-        $this->name = (string)$value;
+        $this->name = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getPublisher()
     {
@@ -117,13 +139,13 @@ abstract class ABookOffer extends AExtOffer
      */
     public function setPublisher($value)
     {
-        $this->publisher = (string)$value;
+        $this->publisher = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getSeries()
     {
@@ -136,32 +158,32 @@ abstract class ABookOffer extends AExtOffer
      */
     public function setSeries($value)
     {
-        $this->series = (string)$value;
+        $this->series = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getYear()
     {
-        return $this->year;
+        return $this->year === null ? null : (int)$this->year;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setYear($value)
     {
-        $this->year = (int)$value;
+        $this->year = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getISBN()
     {
@@ -174,51 +196,51 @@ abstract class ABookOffer extends AExtOffer
      */
     public function setISBN($value)
     {
-        $this->ISBN = (string)$value;
+        $this->ISBN = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getVolume()
     {
-        return $this->volume;
+        return $this->volume === null ? null : (int)$this->volume;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setVolume($value)
     {
-        $this->volume = (int)$value;
+        $this->volume = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getPart()
     {
-        return $this->part;
+        return $this->part === null ? null : (int)$this->part;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setPart($value)
     {
-        $this->part = (int)$value;
+        $this->part = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getLanguage()
     {
@@ -231,13 +253,13 @@ abstract class ABookOffer extends AExtOffer
      */
     public function setLanguage($value)
     {
-        $this->language = (string)$value;
+        $this->language = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getTableOfContents()
     {
@@ -250,7 +272,7 @@ abstract class ABookOffer extends AExtOffer
      */
     public function setTableOfContents($value)
     {
-        $this->tableOfContents = (string)$value;
+        $this->tableOfContents = $value;
 
         return $this;
     }

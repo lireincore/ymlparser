@@ -5,14 +5,15 @@ namespace LireinCore\YMLParser;
 class Category
 {
     use TYML;
+    use TError;
 
     /**
-     * @var int
+     * @var string
      */
     protected $id;
 
     /**
-     * @var int
+     * @var string
      */
     protected $parentId;
 
@@ -20,6 +21,25 @@ class Category
      * @var string
      */
     protected $name;
+
+    /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        if ($this->id === null)
+            $this->setError("Category: missing required attribute 'id'");
+        elseif (!is_numeric($this->id) || (int)$this->id <= 0)
+            $this->setError("Category: incorrect value in attribute 'id'");
+
+        if ($this->parentId !== null && (!is_numeric($this->parentId) || (int)$this->parentId <= 0))
+            $this->setError("Category: incorrect value in attribute 'parentId'");
+
+        if (!$this->name)
+            $this->setError("Category: incorrect value");
+
+        return empty($this->errors);
+    }
 
     /**
      * @param array $attributes
@@ -35,30 +55,30 @@ class Category
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getId()
     {
-        return $this->id;
+        return $this->id === null ? null : (int)$this->id;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setId($value)
     {
-        $this->id = (int)$value;
+        $this->id = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getParentId()
     {
-        return $this->parentId;
+        return $this->parentId === null ? null : (int)$this->parentId;
     }
 
     /**
@@ -67,13 +87,13 @@ class Category
      */
     public function setParentId($value)
     {
-        $this->parentId = (int)$value;
+        $this->parentId = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getName()
     {
@@ -86,7 +106,7 @@ class Category
      */
     public function setName($value)
     {
-        $this->name = (string)$value;
+        $this->name = $value;
 
         return $this;
     }

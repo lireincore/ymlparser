@@ -7,7 +7,7 @@ use LireinCore\YMLParser\DeliveryOption;
 abstract class AExtOffer extends AOffer
 {
     /**
-     * @var int
+     * @var string
      */
     protected $fee;
 
@@ -18,7 +18,7 @@ abstract class AExtOffer extends AOffer
 
     /**
      * Attribute is deprecated
-     * @var int
+     * @var string
      */
     protected $localDeliveryCost;
 
@@ -28,28 +28,22 @@ abstract class AExtOffer extends AOffer
     protected $deliveryOptions = [];
 
     /**
-     * @var bool
+     * @var string
      */
     protected $manufacturerWarranty;
 
     /**
-     * @var bool
+     * @var string
      */
     protected $downloadable;
 
     /**
-     * @var bool
+     * @var string
      */
     protected $adult;
 
     /**
-     * age[unit]
-     * @var string
-     */
-    protected $unit;
-
-    /**
-     * @var int
+     * @var Age
      */
     protected $age;
 
@@ -67,6 +61,60 @@ abstract class AExtOffer extends AOffer
     }
 
     /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        $isValid = parent::isValid();
+
+        if ($this->fee !== null && (!is_numeric($this->fee) || (int)$this->fee <= 0))
+            $this->setError("Offer: incorrect value in attribute 'fee'");
+
+        if ($this->localDeliveryCost !== null && (!is_numeric($this->localDeliveryCost) || ((int)$this->localDeliveryCost) < 0))
+            $this->setError("Offer: incorrect value in attribute 'local_delivery_cost'");
+
+        if ($this->delivery === true && !$this->deliveryOptions && $this->localDeliveryCost == null)
+            $this->setError("Offer: attribute 'delivery-options' is required when 'delivery' is true");
+
+        if ($this->manufacturerWarranty !== null && $this->manufacturerWarranty !== 'true' && $this->manufacturerWarranty !== 'false')
+            $this->setError("Offer: incorrect value in attribute 'manufacturer_warranty'");
+
+        if ($this->downloadable !== null && $this->downloadable !== 'true' && $this->downloadable !== 'false')
+            $this->setError("Offer: incorrect value in attribute 'downloadable'");
+
+        if ($this->adult !== null && $this->adult !== 'true' && $this->adult !== 'false')
+            $this->setError("Offer: incorrect value in attribute 'adult'");
+
+        $subIsValid = true;
+        if ($this->deliveryOptions) {
+            foreach ($this->deliveryOptions as $deliveryOption) {
+                if (!$deliveryOption->isValid()) $subIsValid = false;
+            }
+        }
+        if ($this->age && !$this->age->isValid()) $subIsValid = false;
+
+        return $isValid && empty($this->errors) && $subIsValid;
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrors()
+    {
+        $errors = parent::getErrors();
+
+        if ($this->deliveryOptions) {
+            foreach ($this->deliveryOptions as $deliveryOption) {
+                $errors = array_merge($errors, $deliveryOption->getErrors());
+            }
+        }
+        if ($this->age)
+            $errors = array_merge($errors, $this->age->getErrors());
+
+        return $errors;
+    }
+
+    /**
      * @param array $attrNode
      * @return $this
      */
@@ -77,38 +125,35 @@ abstract class AExtOffer extends AOffer
                 $this->addDeliveryOption((new DeliveryOption())->setAttributes($subNode['attributes']));
             }
         }
-        else {
-            /*if ($attrNode['name'] == 'age') {
-                if (isset($attrNode['attributes']['unit'])) $this->setField('unit', $attrNode['attributes']['unit']);
-            }*/
-
-            parent::setAttribute($attrNode);
+        elseif ($attrNode['name'] == 'age') {
+            $this->setAge((new Age())->setAttributes($attrNode['attributes'] + ['value' => $attrNode['value']]));
         }
+        else parent::setAttribute($attrNode);
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getFee()
     {
-        return $this->fee;
+        return $this->fee === null ? null : (int)$this->fee;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setFee($value)
     {
-        $this->fee = (int)$value;
+        $this->fee = $value;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getMarketCategory()
     {
@@ -121,36 +166,36 @@ abstract class AExtOffer extends AOffer
      */
     public function setMarketCategory($value)
     {
-        $this->marketCategory = (string)$value;
+        $this->marketCategory = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getLocalDeliveryCost()
     {
-        return $this->localDeliveryCost;
+        return $this->localDeliveryCost === null ? null : (int)$this->localDeliveryCost;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setLocalDeliveryCost($value)
     {
-        $this->localDeliveryCost = (int)$value;
+        $this->localDeliveryCost = $value;
 
         return $this;
     }
 
     /**
-     * @return DeliveryOption[]
+     * @return DeliveryOption[]|null
      */
     public function getDeliveryOptions()
     {
-        return $this->deliveryOptions;
+        return $this->deliveryOptions ? $this->deliveryOptions : null;
     }
 
     /**
@@ -178,83 +223,66 @@ abstract class AExtOffer extends AOffer
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getManufacturerWarranty()
     {
-        return $this->manufacturerWarranty;
-    }
+        $result = $this->manufacturerWarranty === null ? null : ($this->manufacturerWarranty === 'false' ? false : (bool)$this->manufacturerWarranty);
 
-    /**
-     * @param bool $value
-     * @return $this
-     */
-    public function setManufacturerWarranty($value)
-    {
-        $this->manufacturerWarranty = $value === 'false' ? false : (bool)$value;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getDownloadable()
-    {
-        return $this->downloadable;
-    }
-
-    /**
-     * @param bool $value
-     * @return $this
-     */
-    public function setDownloadable($value)
-    {
-        $this->downloadable = $value === 'false' ? false : (bool)$value;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getAdult()
-    {
-        return $this->adult;
-    }
-
-    /**
-     * @param bool $value
-     * @return $this
-     */
-    public function setAdult($value)
-    {
-        $this->adult = $value === 'false' ? false : (bool)$value;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUnit()
-    {
-        return $this->unit;
+        return $result;
     }
 
     /**
      * @param string $value
      * @return $this
      */
-    public function setUnit($value)
+    public function setManufacturerWarranty($value)
     {
-        $this->unit = (string)$value;
+        $this->manufacturerWarranty = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return bool|null
+     */
+    public function getDownloadable()
+    {
+        return $this->downloadable === null ? null : ($this->downloadable === 'false' ? false : (bool)$this->downloadable);
+    }
+
+    /**
+     * @param string $value
+     * @return $this
+     */
+    public function setDownloadable($value)
+    {
+        $this->downloadable = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getAdult()
+    {
+        return $this->adult === null ? null : ($this->adult === 'false' ? false : (bool)$this->adult);
+    }
+
+    /**
+     * @param string $value
+     * @return $this
+     */
+    public function setAdult($value)
+    {
+        $this->adult = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return Age|null
      */
     public function getAge()
     {
@@ -262,12 +290,12 @@ abstract class AExtOffer extends AOffer
     }
 
     /**
-     * @param int $value
+     * @param Age $value
      * @return $this
      */
-    public function setAge($value)
+    public function setAge(Age $value)
     {
-        $this->age = (int)$value;
+        $this->age = $value;
 
         return $this;
     }

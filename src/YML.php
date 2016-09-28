@@ -85,7 +85,7 @@ class YML
     }
 
     /**
-     * @return \Generator
+     * @return \Generator|\LireinCore\YMLParser\Offer\SimpleOffer[]|\LireinCore\YMLParser\Offer\VendorModelOffer[]|\LireinCore\YMLParser\Offer\BookOffer[]||\LireinCore\YMLParser\Offer\AudioBookOffer[]||\LireinCore\YMLParser\Offer\ArtistTitleOffer[]||\LireinCore\YMLParser\Offer\MedicineOffer[]||\LireinCore\YMLParser\Offer\EventTicketOffer[]||\LireinCore\YMLParser\Offer\TourOffer[]
      * @throws \Exception
      */
     public function getOffers()

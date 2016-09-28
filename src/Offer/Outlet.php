@@ -2,26 +2,47 @@
 
 namespace LireinCore\YMLParser\Offer;
 
-use LireinCore\YMLParser\TYML;
-
 class Outlet
 {
-    use TYML;
+    use \LireinCore\YMLParser\TYML;
+    use \LireinCore\YMLParser\TError;
+
+    const DEFAULT_INSTOCK = 0;
+    const DEFAULT_BOOKING = true;
 
     /**
-     * @var string //todo: int?
+     * @var string
      */
     protected $id;
 
     /**
-     * @var int //todo: out of range?
+     * @var string
      */
-    protected $instock = 0;
+    protected $instock;
 
     /**
-     * @var bool
+     * @var string
      */
-    protected $booking = true;
+    protected $booking;
+
+    /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        if ($this->id === null)
+            $this->setError("Outlet: missing required attribute 'id'");
+        elseif (!$this->id)
+            $this->setError("Outlet: incorrect value in attribute 'id'");
+
+        if ($this->instock !== null && (!is_numeric($this->instock) || (int)$this->instock < 0))
+            $this->setError("Outlet: incorrect value in attribute 'instock'");
+
+        if ($this->booking !== null && $this->booking !== 'true' && $this->booking !== 'false')
+            $this->setError("Outlet: incorrect value in attribute 'booking'");
+
+        return empty($this->errors);
+    }
 
     /**
      * @param array $attributes
@@ -37,7 +58,7 @@ class Outlet
     }
 
     /**
-     * @return string
+     * @return string|null //todo: int?
      */
     public function getId()
     {
@@ -50,45 +71,45 @@ class Outlet
      */
     public function setId($value)
     {
-        $this->id = (string)$value;
+        $this->id = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getInstock()
     {
-        return $this->instock;
+        return $this->instock === null ? null : (int)$this->instock;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setInstock($value)
     {
-        $this->instock = (int)$value;
+        $this->instock = $value;
 
         return $this;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getBooking()
     {
-        return $this->booking;
+        return $this->booking === null ? null : ($this->booking === 'false' ? false : (bool)$this->booking);
     }
 
     /**
-     * @param bool $value
+     * @param string $value
      * @return $this
      */
     public function setBooking($value)
     {
-        $this->booking = $value === 'false' ? false : (bool)$value;
+        $this->booking = $value;
 
         return $this;
     }

@@ -10,7 +10,7 @@ class BookOffer extends ABookOffer
     protected $binding;
 
     /**
-     * @var int
+     * @var string
      */
     protected $pageExtent;
 
@@ -26,7 +26,20 @@ class BookOffer extends ABookOffer
     }
 
     /**
-     * @return string
+     * @return bool
+     */
+    public function isValid()
+    {
+        $isValid = parent::isValid();
+
+        if ($this->pageExtent !== null && (!is_numeric($this->pageExtent) || (int)$this->volume <= 0))
+            $this->setError("Offer: incorrect value in attribute 'page_extent'");
+
+        return $isValid && empty($this->errors);
+    }
+
+    /**
+     * @return string|null
      */
     public function getBinding()
     {
@@ -39,26 +52,26 @@ class BookOffer extends ABookOffer
      */
     public function setBinding($value)
     {
-        $this->binding = (string)$value;
+        $this->binding = $value;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getPageExtent()
     {
-        return $this->pageExtent;
+        return $this->pageExtent === null ? null : (int)$this->pageExtent;
     }
 
     /**
-     * @param int $value
+     * @param string $value
      * @return $this
      */
     public function setPageExtent($value)
     {
-        $this->pageExtent = (int)$value;
+        $this->pageExtent = $value;
 
         return $this;
     }

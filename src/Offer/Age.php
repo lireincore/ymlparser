@@ -2,16 +2,11 @@
 
 namespace LireinCore\YMLParser\Offer;
 
-class Param
+class Age
 {
     use \LireinCore\YMLParser\TYML;
     use \LireinCore\YMLParser\TError;
     
-    /**
-     * @var string
-     */
-    protected $name;
-
     /**
      * @var string
      */
@@ -27,13 +22,15 @@ class Param
      */
     public function isValid()
     {
-        if ($this->name === null)
-            $this->setError("Param: missing required attribute 'name'");
-        elseif (!$this->name)
-            $this->setError("Param: incorrect value in attribute 'name'");
+        if ($this->unit === null)
+            $this->setError("Age: missing required attribute 'unit'");
+        elseif ($this->unit !== 'year' && $this->unit !== 'month')
+            $this->setError("Age: incorrect value in attribute 'unit'");
 
-        if (!$this->value)
-            $this->setError("Param: incorrect value");
+        if ($this->unit === 'year' && !in_array($this->value, ['0', '6', '12', '16', '18']))
+            $this->setError("Age: incorrect value");
+        elseif ($this->unit === 'month' && !in_array($this->value, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']))
+            $this->setError("Age: incorrect value");
 
         return empty($this->errors);
     }
@@ -47,25 +44,6 @@ class Param
         foreach ($attributes as $name => $value) {
             $this->setField($name, $value);
         }
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $value
-     * @return $this
-     */
-    public function setName($value)
-    {
-        $this->name = $value;
 
         return $this;
     }
@@ -90,11 +68,11 @@ class Param
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
     public function getValue()
     {
-        return $this->value;
+        return $this->value === null ? null : (int)$this->value;
     }
 
     /**
