@@ -2,6 +2,15 @@
 
 namespace LireinCore\YMLParser;
 
+use \LireinCore\YMLParser\Offer\VendorModelOffer;
+use \LireinCore\YMLParser\Offer\BookOffer;
+use \LireinCore\YMLParser\Offer\AudioBookOffer;
+use \LireinCore\YMLParser\Offer\ArtistTitleOffer;
+use \LireinCore\YMLParser\Offer\MedicineOffer;
+use \LireinCore\YMLParser\Offer\EventTicketOffer;
+use \LireinCore\YMLParser\Offer\TourOffer;
+use \LireinCore\YMLParser\Offer\SimpleOffer;
+
 class YML
 {
     /**
@@ -85,7 +94,7 @@ class YML
     }
 
     /**
-     * @return \Generator|\LireinCore\YMLParser\Offer\SimpleOffer[]|\LireinCore\YMLParser\Offer\VendorModelOffer[]|\LireinCore\YMLParser\Offer\BookOffer[]||\LireinCore\YMLParser\Offer\AudioBookOffer[]||\LireinCore\YMLParser\Offer\ArtistTitleOffer[]||\LireinCore\YMLParser\Offer\MedicineOffer[]||\LireinCore\YMLParser\Offer\EventTicketOffer[]||\LireinCore\YMLParser\Offer\TourOffer[]
+     * @return \Generator|SimpleOffer[]|VendorModelOffer[]|BookOffer[]|AudioBookOffer[]|ArtistTitleOffer[]|MedicineOffer[]|EventTicketOffer[]|TourOffer[]
      * @throws \Exception
      */
     public function getOffers()
@@ -136,7 +145,7 @@ class YML
     }
 
     /**
-     * @return \LireinCore\YMLParser\Offer\AOffer
+     * @return SimpleOffer|VendorModelOffer|BookOffer|AudioBookOffer|ArtistTitleOffer|MedicineOffer|EventTicketOffer|TourOffer
      */
     protected function parseOffer()
     {
@@ -270,27 +279,27 @@ class YML
 
     /**
      * @param $type
-     * @return \LireinCore\YMLParser\Offer\AOffer
+     * @return SimpleOffer|VendorModelOffer|BookOffer|AudioBookOffer|ArtistTitleOffer|MedicineOffer|EventTicketOffer|TourOffer
      */
     protected function createOffer($type)
     {
         switch ($type) {
             case 'vendor.model':
-                return new \LireinCore\YMLParser\Offer\VendorModelOffer();
+                return new VendorModelOffer();
             case 'book':
-                return new \LireinCore\YMLParser\Offer\BookOffer();
+                return new BookOffer();
             case 'audiobook':
-                return new \LireinCore\YMLParser\Offer\AudioBookOffer();
+                return new AudioBookOffer();
             case 'artist.title':
-                return new \LireinCore\YMLParser\Offer\ArtistTitleOffer();
+                return new ArtistTitleOffer();
             case 'medicine':
-                return new \LireinCore\YMLParser\Offer\MedicineOffer();
+                return new MedicineOffer();
             case 'event-ticket':
-                return new \LireinCore\YMLParser\Offer\EventTicketOffer();
+                return new EventTicketOffer();
             case 'tour':
-                return new \LireinCore\YMLParser\Offer\TourOffer();
+                return new TourOffer();
             default:
-                return new \LireinCore\YMLParser\Offer\SimpleOffer();
+                return new SimpleOffer();
         }
     }
 }

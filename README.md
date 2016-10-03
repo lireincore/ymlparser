@@ -29,13 +29,13 @@ try {
     $yml->parse($filepath);
     $date = $yml->getDate();
     $shop = $yml->getShop();
-    if ($shop->isValid) {
+    if ($shop->isValid()) {
         $offersCount = $shop->getOffersCount();
         $shopData = $shop->getData();
         //...
         foreach ($yml->getOffers() as $offer) {
-            if ($offer->isValid) {
-                $offerCategoryHierarchy = $shop->getCategoryHierarchy($offer->getCategoryId);
+            if ($offer->isValid()) {
+                $offerCategoryHierarchy = $shop->getCategoryHierarchy($offer->getCategoryId());
                 $offerData = $offer->getData();
                 //...
             } else {
