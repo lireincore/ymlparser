@@ -22,11 +22,12 @@
                                             <xs:complexType>
                                                 <xs:attribute name="id" use="required">
                                                     <xs:simpleType>
-                                                        <xs:restriction base="xs:NMTOKEN">
+                                                        <xs:restriction base="xs:string">
                                                             <xs:enumeration value="RUR" />
                                                             <xs:enumeration value="RUB" />
                                                             <xs:enumeration value="UAH" />
                                                             <xs:enumeration value="BYN" />
+                                                            <xs:enumeration value="BYR" />
                                                             <xs:enumeration value="KZT" />
                                                             <xs:enumeration value="USD" />
                                                             <xs:enumeration value="EUR" />

@@ -2,14 +2,14 @@
 
 namespace LireinCore\YMLParser;
 
-use \LireinCore\YMLParser\Offer\VendorModelOffer;
-use \LireinCore\YMLParser\Offer\BookOffer;
-use \LireinCore\YMLParser\Offer\AudioBookOffer;
-use \LireinCore\YMLParser\Offer\ArtistTitleOffer;
-use \LireinCore\YMLParser\Offer\MedicineOffer;
-use \LireinCore\YMLParser\Offer\EventTicketOffer;
-use \LireinCore\YMLParser\Offer\TourOffer;
-use \LireinCore\YMLParser\Offer\SimpleOffer;
+use LireinCore\YMLParser\Offer\VendorModelOffer;
+use LireinCore\YMLParser\Offer\BookOffer;
+use LireinCore\YMLParser\Offer\AudioBookOffer;
+use LireinCore\YMLParser\Offer\ArtistTitleOffer;
+use LireinCore\YMLParser\Offer\MedicineOffer;
+use LireinCore\YMLParser\Offer\EventTicketOffer;
+use LireinCore\YMLParser\Offer\TourOffer;
+use LireinCore\YMLParser\Offer\SimpleOffer;
 
 class YML
 {
@@ -21,7 +21,12 @@ class YML
     /**
      * @var string
      */
-    protected $file;
+    protected $uri;
+
+    /**
+     * @var string
+     */
+    protected $schema;
 
     /**
      * @var array
@@ -52,14 +57,16 @@ class YML
     }
 
     /**
-     * @param string $file
+     * @param string $uri
+     * @param string|null $schema
      * @throws \Exception
      */
-    public function parse($file)
+    public function parse($uri, $schema = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'yml.xsd')
     {
-        $this->open($file);
+        $this->uri = $uri;
+        $this->schema = $schema;
 
-        $this->file = $file;
+        $this->open();
 
         while ($this->read()) {
             if ($this->path == 'yml_catalog') {
@@ -99,7 +106,7 @@ class YML
      */
     public function getOffers()
     {
-        $this->open($this->file);
+        $this->open();
 
         while ($this->read()) {
             if ($this->path == 'yml_catalog/shop/offers') {
@@ -228,22 +235,20 @@ class YML
     }
 
     /**
-     * @param string $file
      * @throws \Exception
      */
-    protected function open($file)
+    protected function open()
     {
-        if (!is_file($file)) {
-            throw new \Exception("File '{$file}' not found");
+        $uri = (string)$this->uri;
+        if (!$this->XMLReader->open($uri)) {
+            throw new \Exception("Failed to open XML file '{$uri}'");
         }
 
-        if (!$this->XMLReader->open($file)) {
-            throw new \Exception("Failed to open file '{$file}'");
-        }
-        
-        $shemapath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'yml.xsd';
-        if (!$this->XMLReader->setSchema($shemapath)) {
-            throw new \Exception("Failed to open XML Schema file '{$shemapath}'");
+        if (!empty($this->schema)) {
+            $schema = (string)$this->schema;
+            if (!$this->XMLReader->setSchema($schema)) {
+                throw new \Exception("Failed to open XML Schema file '{$schema}'");
+            }
         }
     }
     

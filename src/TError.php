@@ -1,4 +1,5 @@
 <?php
+
 namespace LireinCore\YMLParser;
 
 trait TError
