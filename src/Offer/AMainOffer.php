@@ -12,6 +12,11 @@ abstract class AMainOffer extends AExtOffer
     protected $groupId;
 
     /**
+     * @var string
+     */
+    protected $rec;
+
+    /**
      * price[from]
      * @var string
      */
@@ -39,7 +44,7 @@ abstract class AMainOffer extends AExtOffer
     {
         return array_merge(parent::getAttributesList(), [
             //subnodes
-            'group_id', 'vendor', 'vendorCode', 'model'
+            'group_id', 'rec', 'vendor', 'vendorCode', 'model'
         ]);
     }
 
@@ -89,6 +94,25 @@ abstract class AMainOffer extends AExtOffer
     public function setGroupId($value)
     {
         $this->groupId = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRec()
+    {
+        return $this->rec;
+    }
+
+    /**
+     * @param string $value
+     * @return $this
+     */
+    public function setRec($value)
+    {
+        $this->rec = $value;
 
         return $this;
     }

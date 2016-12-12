@@ -173,7 +173,7 @@ class YML
         $xml = $this->XMLReader;
         $name = $xml->name;
         $path = $basePath . '/' . $name;
-        $value = null;
+        $value = '';
         $nodes = [];
 
         $attributes = $this->parseAttributes();
@@ -183,14 +183,15 @@ class YML
                 if ($xml->nodeType == \XMLReader::ELEMENT) {
                     $nodes[] = $this->parseNode($path);
                 }
-                elseif ($xml->nodeType == \XMLReader::TEXT && $xml->hasValue) {
-                    $value = $xml->value;
+                elseif (($xml->nodeType == \XMLReader::TEXT || $xml->nodeType == \XMLReader::CDATA) && $xml->hasValue) {
+                    $value .= $xml->value;
                 }
                 elseif ($this->path == $basePath) {
                     break;
                 }
             }
         }
+        $value = (trim($value)) ? $value : null;
 
         return ['name' => $name, 'attributes' => $attributes, 'value' => $value, 'nodes' => $nodes];
     }
