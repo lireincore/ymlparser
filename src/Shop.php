@@ -189,18 +189,15 @@ class Shop
             foreach ($attrNode['nodes'] as $subNode) {
                 $this->addCurrency((new Currency())->setAttributes($subNode['attributes']));
             }
-        }
-        elseif ($attrNode['name'] == 'categories') {
+        } elseif ($attrNode['name'] == 'categories') {
             foreach ($attrNode['nodes'] as $subNode) {
                 $this->addCategory((new Category())->setAttributes($subNode['attributes'] + ['name' => $subNode['value']]));
             }
-        }
-        elseif ($attrNode['name'] == 'delivery-options') {
+        } elseif ($attrNode['name'] == 'delivery-options') {
             foreach ($attrNode['nodes'] as $subNode) {
                 $this->addDeliveryOption((new DeliveryOption())->setAttributes($subNode['attributes']));
             }
-        }
-        else {
+        } else {
             if (!is_null($attrNode['value'])) $this->setField($attrNode['name'], $attrNode['value']);
             if (!empty($attrNode['attributes'])) {
                 foreach ($attrNode['attributes'] as $name => $value) {

@@ -6,12 +6,12 @@
 
 ## About
 
-[YML (Yandex Market Language)](https://yandex.ru/support/partnermarket/yml/about-yml.xml) streaming parser with validation for PHP.
+[YML (Yandex Market Language)](https://yandex.ru/support/partnermarket/yml/about-yml.xml) streaming parser with validation.
 Based on XMLReader. Suitable for large files.
 
 ## Install
 
-Add the `lireincore/ymlparser` package to your `require` section in the `composer.json` file
+Add the `"lireincore/ymlparser": "^3.2"` package to your `require` section in the `composer.json` file
 
 or
 

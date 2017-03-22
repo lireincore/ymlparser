@@ -126,8 +126,7 @@ class TourOffer extends AExtOffer
     {
         if ($attrNode['name'] == 'dataTour') {
             $this->addDataTour($attrNode['value']);
-        }
-        else {
+        } else {
             parent::setAttribute($attrNode);
         }
 

@@ -58,13 +58,17 @@ class YML
 
     /**
      * @param string $uri
-     * @param string|null $schema
+     * @param string|bool $schema
      * @throws \Exception
      */
-    public function parse($uri, $schema = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'yml.xsd')
+    public function parse($uri, $schema = true)
     {
         $this->uri = $uri;
-        $this->schema = $schema;
+        if ($schema === true) {
+            $this->schema = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'yml.xsd';
+        } elseif (is_string($schema)) {
+            $this->schema = $schema;
+        }
 
         $this->open();
 
@@ -113,8 +117,7 @@ class YML
                 while ($this->read()) {
                     if ($this->path == 'yml_catalog/shop/offers/offer') {
                         yield $this->parseOffer();
-                    }
-                    elseif ($this->path == 'yml_catalog/shop') {
+                    } elseif ($this->path == 'yml_catalog/shop') {
                         break;
                     }
                 }
@@ -137,11 +140,9 @@ class YML
         while ($this->read()) {
             if ($this->path == 'yml_catalog/shop/offers') {
                 $shop->setOffersCount($this->parseOffersCount());
-            }
-            elseif ($xml->nodeType == \XMLReader::ELEMENT) {
+            } elseif ($xml->nodeType == \XMLReader::ELEMENT) {
                 $nodes[] = $this->parseNode('yml_catalog/shop');
-            }
-            elseif ($this->path == 'yml_catalog') {
+            } elseif ($this->path == 'yml_catalog') {
                 break;
             }
         }
@@ -182,11 +183,9 @@ class YML
             while ($this->read()) {
                 if ($xml->nodeType == \XMLReader::ELEMENT) {
                     $nodes[] = $this->parseNode($path);
-                }
-                elseif (($xml->nodeType == \XMLReader::TEXT || $xml->nodeType == \XMLReader::CDATA) && $xml->hasValue) {
+                } elseif (($xml->nodeType == \XMLReader::TEXT || $xml->nodeType == \XMLReader::CDATA) && $xml->hasValue) {
                     $value .= $xml->value;
-                }
-                elseif ($this->path == $basePath) {
+                } elseif ($this->path == $basePath) {
                     break;
                 }
             }
@@ -246,7 +245,7 @@ class YML
         }
 
         if (!empty($this->schema)) {
-            $schema = (string)$this->schema;
+            $schema = $this->schema;
             if (!$this->XMLReader->setSchema($schema)) {
                 throw new \Exception("Failed to open XML Schema file '{$schema}'");
             }

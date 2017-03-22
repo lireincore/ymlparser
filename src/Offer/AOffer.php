@@ -255,17 +255,13 @@ abstract class AOffer
             foreach ($attrNode['nodes'] as $subNode) {
                 $this->addOutlet((new Outlet())->setAttributes($subNode['attributes']));
             }
-        }
-        elseif ($attrNode['name'] == 'picture') {
+        } elseif ($attrNode['name'] == 'picture') {
             $this->addPicture($attrNode['value']);
-        }
-        elseif ($attrNode['name'] == 'barcode') {
+        } elseif ($attrNode['name'] == 'barcode') {
             $this->addBarcode($attrNode['value']);
-        }
-        elseif ($attrNode['name'] == 'param') {
+        } elseif ($attrNode['name'] == 'param') {
             $this->addParam((new Param())->setAttributes($attrNode['attributes'] + ['value' => $attrNode['value']]));
-        }
-        else {
+        } else {
             if (!is_null($attrNode['value'])) $this->setField($attrNode['name'], $attrNode['value']);
             if (!empty($attrNode['attributes'])) {
                 foreach ($attrNode['attributes'] as $name => $value) {

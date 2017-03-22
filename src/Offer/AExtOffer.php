@@ -108,8 +108,9 @@ abstract class AExtOffer extends AOffer
                 $errors = array_merge($errors, $deliveryOption->getErrors());
             }
         }
-        if ($this->age)
+        if ($this->age) {
             $errors = array_merge($errors, $this->age->getErrors());
+        }
 
         return $errors;
     }
@@ -124,11 +125,11 @@ abstract class AExtOffer extends AOffer
             foreach ($attrNode['nodes'] as $subNode) {
                 $this->addDeliveryOption((new DeliveryOption())->setAttributes($subNode['attributes']));
             }
-        }
-        elseif ($attrNode['name'] == 'age') {
+        } elseif ($attrNode['name'] == 'age') {
             $this->setAge((new Age())->setAttributes($attrNode['attributes'] + ['value' => $attrNode['value']]));
+        } else {
+            parent::setAttribute($attrNode);
         }
-        else parent::setAttribute($attrNode);
 
         return $this;
     }
