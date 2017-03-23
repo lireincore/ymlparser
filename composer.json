@@ -1,14 +1,13 @@
 {
     "name": "lireincore/ymlparser",
     "description": "YML (Yandex Market Language) parser",
-    "version": "3.2.1",
     "type": "library",
     "keywords": ["yml", "parser", "yandex", "market"],
     "homepage": "https://github.com/lireincore/ymlparser",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/lireincore/imgcache/issues",
-        "source": "https://github.com/lireincore/imgcache"
+        "issues": "https://github.com/lireincore/ymlparser/issues",
+        "source": "https://github.com/lireincore/ymlparser"
     },
     "authors": [
         {
@@ -19,9 +18,6 @@
     "require": {
         "php": ">=5.5",
         "ext-xmlreader": "*"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "~5.0"
     },
     "autoload": {
         "psr-4": {
