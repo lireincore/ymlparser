@@ -9,6 +9,16 @@ abstract class AMainOffer extends AExtOffer
     /**
      * @var string
      */
+    protected $minQuantity;
+
+    /**
+     * @var string
+     */
+    protected $stepQuantity;
+
+    /**
+     * @var string
+     */
     protected $groupId;
 
     /**
@@ -18,6 +28,7 @@ abstract class AMainOffer extends AExtOffer
 
     /**
      * price[from]
+     *
      * @var string
      */
     protected $from;
@@ -44,7 +55,7 @@ abstract class AMainOffer extends AExtOffer
     {
         return array_merge(parent::getAttributesList(), [
             //subnodes
-            'group_id', 'rec', 'vendor', 'vendorCode', 'model'
+            'min-quantity', 'step-quantity', 'group_id', 'rec', 'vendor', 'vendorCode', 'model'
         ]);
     }
 
@@ -54,6 +65,12 @@ abstract class AMainOffer extends AExtOffer
     public function isValid()
     {
         $isValid = parent::isValid();
+
+        if ($this->minQuantity !== null && (!is_numeric($this->minQuantity) || (int)$this->minQuantity <= 0))
+            $this->setError("Offer: incorrect value in attribute 'min-quantity'");
+
+        if ($this->stepQuantity !== null && (!is_numeric($this->stepQuantity) || (int)$this->stepQuantity <= 0))
+            $this->setError("Offer: incorrect value in attribute 'step-quantity'");
 
         if ($this->groupId !== null && !is_numeric($this->groupId))
             $this->setError("Offer: incorrect value in attribute 'group_id'");
@@ -78,6 +95,44 @@ abstract class AMainOffer extends AExtOffer
 
         return $this;
     }*/
+
+    /**
+     * @return int|null
+     */
+    public function getMinQuantity()
+    {
+        return $this->minQuantity === null ? null : (int)$this->minQuantity;
+    }
+
+    /**
+     * @param string $value
+     * @return $this
+     */
+    public function setMinQuantity($value)
+    {
+        $this->minQuantity = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getStepQuantity()
+    {
+        return $this->stepQuantity === null ? null : (int)$this->stepQuantity;
+    }
+
+    /**
+     * @param string $value
+     * @return $this
+     */
+    public function setStepQuantity($value)
+    {
+        $this->stepQuantity = $value;
+
+        return $this;
+    }
 
     /**
      * @return int|null

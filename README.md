@@ -16,7 +16,7 @@ Add the `"lireincore/ymlparser": "^3.2"` package to your `require` section in th
 or
 
 ``` bash
-$ composer require lireincore/ymlparser
+$ php composer.phar require lireincore/ymlparser
 ```
 
 ## Usage
