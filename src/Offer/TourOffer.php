@@ -95,25 +95,25 @@ class TourOffer extends AExtOffer
         $isValid = parent::isValid();
 
         if ($this->name === null)
-            $this->setError("Offer: missing required attribute 'name'");
+            $this->addError("Offer: missing required attribute 'name'");
 
         if ($this->days === null)
-            $this->setError("Offer: missing required attribute 'days'");
+            $this->addError("Offer: missing required attribute 'days'");
         elseif (!is_numeric($this->days) || (int)$this->days <= 0)
-            $this->setError("Offer: incorrect value in attribute 'days'");
+            $this->addError("Offer: incorrect value in attribute 'days'");
 
         if ($this->included === null)
-            $this->setError("Offer: missing required attribute 'included'");
+            $this->addError("Offer: missing required attribute 'included'");
 
         if ($this->transport === null)
-            $this->setError("Offer: missing required attribute 'transport'");
+            $this->addError("Offer: missing required attribute 'transport'");
 
         if ($this->priceMin !== null && (!is_numeric($this->priceMin) || (float)$this->priceMin <= 0))
-            $this->setError("Offer: incorrect value in attribute 'price_min'");
+            $this->addError("Offer: incorrect value in attribute 'price_min'");
 
         if ($this->priceMax !== null && (!is_numeric($this->priceMax) || ((float)$this->priceMax <= 0
             || ($this->priceMin !== null && (float)$this->priceMin >= (float)$this->priceMax))))
-            $this->setError("Offer: incorrect value in attribute 'price_max'");
+            $this->addError("Offer: incorrect value in attribute 'price_max'");
 
         return $isValid && empty($this->errors);
     }
@@ -122,12 +122,12 @@ class TourOffer extends AExtOffer
      * @param array $attrNode
      * @return $this
      */
-    public function setAttribute(array $attrNode)
+    public function addAttribute(array $attrNode)
     {
         if ($attrNode['name'] == 'dataTour') {
             $this->addDataTour($attrNode['value']);
         } else {
-            parent::setAttribute($attrNode);
+            parent::addAttribute($attrNode);
         }
 
         return $this;

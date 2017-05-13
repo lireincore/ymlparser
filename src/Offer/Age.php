@@ -23,14 +23,14 @@ class Age
     public function isValid()
     {
         if ($this->unit === null)
-            $this->setError("Age: missing required attribute 'unit'");
+            $this->addError("Age: missing required attribute 'unit'");
         elseif ($this->unit !== 'year' && $this->unit !== 'month')
-            $this->setError("Age: incorrect value in attribute 'unit'");
+            $this->addError("Age: incorrect value in attribute 'unit'");
 
         if ($this->unit === 'year' && !in_array($this->value, ['0', '6', '12', '16', '18']))
-            $this->setError("Age: incorrect value");
+            $this->addError("Age: incorrect value");
         elseif ($this->unit === 'month' && !in_array($this->value, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']))
-            $this->setError("Age: incorrect value");
+            $this->addError("Age: incorrect value");
 
         return empty($this->errors);
     }
@@ -39,10 +39,10 @@ class Age
      * @param array $attributes
      * @return $this
      */
-    public function setAttributes($attributes)
+    public function addAttributes($attributes)
     {
         foreach ($attributes as $name => $value) {
-            $this->setField($name, $value);
+            $this->addField($name, $value);
         }
 
         return $this;

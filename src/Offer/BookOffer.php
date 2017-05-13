@@ -33,7 +33,7 @@ class BookOffer extends ABookOffer
         $isValid = parent::isValid();
 
         if ($this->pageExtent !== null && (!is_numeric($this->pageExtent) || (int)$this->volume <= 0))
-            $this->setError("Offer: incorrect value in attribute 'page_extent'");
+            $this->addError("Offer: incorrect value in attribute 'page_extent'");
 
         return $isValid && empty($this->errors);
     }

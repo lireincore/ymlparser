@@ -30,15 +30,15 @@ class DeliveryOption
     public function isValid()
     {
         if ($this->cost === null)
-            $this->setError("DeliveryOption: missing required attribute 'cost'");
+            $this->addError("DeliveryOption: missing required attribute 'cost'");
         elseif (!is_numeric($this->cost) || ((int)$this->cost) < 0)
-            $this->setError("DeliveryOption: incorrect value in attribute 'cost'");
+            $this->addError("DeliveryOption: incorrect value in attribute 'cost'");
 
         if ($this->days === null)
-            $this->setError("DeliveryOption: missing required attribute 'days'");
+            $this->addError("DeliveryOption: missing required attribute 'days'");
 
         if ($this->orderBefore !== null && (!is_numeric($this->orderBefore) || (int)$this->orderBefore < 0 || (int)$this->orderBefore > 24))
-            $this->setError("DeliveryOption: incorrect value in attribute 'order-before'");
+            $this->addError("DeliveryOption: incorrect value in attribute 'order-before'");
 
         return empty($this->errors);
     }
@@ -47,10 +47,10 @@ class DeliveryOption
      * @param array $attributes
      * @return $this
      */
-    public function setAttributes($attributes)
+    public function addAttributes($attributes)
     {
         foreach ($attributes as $name => $value) {
-            $this->setField($name, $value);
+            $this->addField($name, $value);
         }
 
         return $this;

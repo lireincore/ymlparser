@@ -28,7 +28,7 @@ class SimpleOffer extends AMainOffer
         $isValid = parent::isValid();
 
         if ($this->name === null)
-            $this->setError("Offer: missing required attribute 'name'");
+            $this->addError("Offer: missing required attribute 'name'");
 
         return $isValid && empty($this->errors);
     }

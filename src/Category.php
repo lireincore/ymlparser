@@ -28,15 +28,15 @@ class Category
     public function isValid()
     {
         if ($this->id === null)
-            $this->setError("Category: missing required attribute 'id'");
+            $this->addError("Category: missing required attribute 'id'");
         elseif (!is_numeric($this->id) || (int)$this->id <= 0)
-            $this->setError("Category: incorrect value in attribute 'id'");
+            $this->addError("Category: incorrect value in attribute 'id'");
 
         if ($this->parentId !== null && (!is_numeric($this->parentId) || (int)$this->parentId <= 0))
-            $this->setError("Category: incorrect value in attribute 'parentId'");
+            $this->addError("Category: incorrect value in attribute 'parentId'");
 
         if (!$this->name)
-            $this->setError("Category: incorrect value");
+            $this->addError("Category: incorrect value");
 
         return empty($this->errors);
     }
@@ -45,10 +45,10 @@ class Category
      * @param array $attributes
      * @return $this
      */
-    public function setAttributes($attributes)
+    public function addAttributes($attributes)
     {
         foreach ($attributes as $name => $value) {
-            $this->setField($name, $value);
+            $this->addField($name, $value);
         }
 
         return $this;

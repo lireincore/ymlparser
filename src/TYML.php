@@ -9,7 +9,7 @@ trait TYML
      * @param mixed $value
      * @return $this
      */
-    protected function setField($name, $value)
+    protected function addField($name, $value)
     {
         $setter = 'set' . str_replace(['-', '_'], '', $name);
         if (method_exists($this, $setter)) {

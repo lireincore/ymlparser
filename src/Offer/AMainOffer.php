@@ -67,16 +67,16 @@ abstract class AMainOffer extends AExtOffer
         $isValid = parent::isValid();
 
         if ($this->minQuantity !== null && (!is_numeric($this->minQuantity) || (int)$this->minQuantity <= 0))
-            $this->setError("Offer: incorrect value in attribute 'min-quantity'");
+            $this->addError("Offer: incorrect value in attribute 'min-quantity'");
 
         if ($this->stepQuantity !== null && (!is_numeric($this->stepQuantity) || (int)$this->stepQuantity <= 0))
-            $this->setError("Offer: incorrect value in attribute 'step-quantity'");
+            $this->addError("Offer: incorrect value in attribute 'step-quantity'");
 
         if ($this->groupId !== null && !is_numeric($this->groupId))
-            $this->setError("Offer: incorrect value in attribute 'group_id'");
+            $this->addError("Offer: incorrect value in attribute 'group_id'");
 
         if ($this->from !== null && $this->from !== 'true' && $this->from !== 'false')
-            $this->setError("Price: incorrect value in attribute 'from'");
+            $this->addError("Price: incorrect value in attribute 'from'");
 
         return $isValid && empty($this->errors);
     }
@@ -85,13 +85,13 @@ abstract class AMainOffer extends AExtOffer
      * @param array $attrNode
      * @return $this
      */
-    /*public function setAttribute(array $attrNode)
+    /*public function addAttribute(array $attrNode)
     {
         //if ($attrNode['name'] == 'price') {
         //    if (isset($attrNode['attributes']['from'])) $this->setField('from', $attrNode['attributes']['from']);
         //}
 
-        parent::setAttribute($attrNode);
+        parent::addAttribute($attrNode);
 
         return $this;
     }*/

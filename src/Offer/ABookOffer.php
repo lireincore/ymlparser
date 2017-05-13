@@ -73,16 +73,16 @@ abstract class ABookOffer extends AExtOffer
         $isValid = parent::isValid();
 
         if ($this->name === null)
-            $this->setError("Offer: missing required attribute 'name'");
+            $this->addError("Offer: missing required attribute 'name'");
 
         if ($this->year !== null && !is_numeric($this->year))
-            $this->setError("Offer: incorrect value in attribute 'year'");
+            $this->addError("Offer: incorrect value in attribute 'year'");
 
         if ($this->volume !== null && (!is_numeric($this->volume) || (int)$this->volume <= 0))
-            $this->setError("Offer: incorrect value in attribute 'volume'");
+            $this->addError("Offer: incorrect value in attribute 'volume'");
 
         if ($this->part !== null && (!is_numeric($this->part) || (int)$this->part <= 0))
-            $this->setError("Offer: incorrect value in attribute 'part'");
+            $this->addError("Offer: incorrect value in attribute 'part'");
 
         return $isValid && empty($this->errors);
     }

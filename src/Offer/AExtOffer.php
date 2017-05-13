@@ -68,22 +68,22 @@ abstract class AExtOffer extends AOffer
         $isValid = parent::isValid();
 
         if ($this->fee !== null && (!is_numeric($this->fee) || (int)$this->fee <= 0))
-            $this->setError("Offer: incorrect value in attribute 'fee'");
+            $this->addError("Offer: incorrect value in attribute 'fee'");
 
         if ($this->localDeliveryCost !== null && (!is_numeric($this->localDeliveryCost) || ((int)$this->localDeliveryCost) < 0))
-            $this->setError("Offer: incorrect value in attribute 'local_delivery_cost'");
+            $this->addError("Offer: incorrect value in attribute 'local_delivery_cost'");
 
         if ($this->delivery === true && !$this->deliveryOptions && $this->localDeliveryCost == null)
-            $this->setError("Offer: attribute 'delivery-options' is required when 'delivery' is true");
+            $this->addError("Offer: attribute 'delivery-options' is required when 'delivery' is true");
 
         if ($this->manufacturerWarranty !== null && $this->manufacturerWarranty !== 'true' && $this->manufacturerWarranty !== 'false')
-            $this->setError("Offer: incorrect value in attribute 'manufacturer_warranty'");
+            $this->addError("Offer: incorrect value in attribute 'manufacturer_warranty'");
 
         if ($this->downloadable !== null && $this->downloadable !== 'true' && $this->downloadable !== 'false')
-            $this->setError("Offer: incorrect value in attribute 'downloadable'");
+            $this->addError("Offer: incorrect value in attribute 'downloadable'");
 
         if ($this->adult !== null && $this->adult !== 'true' && $this->adult !== 'false')
-            $this->setError("Offer: incorrect value in attribute 'adult'");
+            $this->addError("Offer: incorrect value in attribute 'adult'");
 
         $subIsValid = true;
         if ($this->deliveryOptions) {
@@ -119,16 +119,16 @@ abstract class AExtOffer extends AOffer
      * @param array $attrNode
      * @return $this
      */
-    public function setAttribute(array $attrNode)
+    public function addAttribute(array $attrNode)
     {
         if ($attrNode['name'] == 'delivery-options') {
             foreach ($attrNode['nodes'] as $subNode) {
-                $this->addDeliveryOption((new DeliveryOption())->setAttributes($subNode['attributes']));
+                $this->addDeliveryOption((new DeliveryOption())->addAttributes($subNode['attributes']));
             }
         } elseif ($attrNode['name'] == 'age') {
-            $this->setAge((new Age())->setAttributes($attrNode['attributes'] + ['value' => $attrNode['value']]));
+            $this->setAge((new Age())->addAttributes($attrNode['attributes'] + ['value' => $attrNode['value']]));
         } else {
-            parent::setAttribute($attrNode);
+            parent::addAttribute($attrNode);
         }
 
         return $this;

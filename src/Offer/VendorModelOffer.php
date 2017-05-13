@@ -28,10 +28,10 @@ class VendorModelOffer extends AMainOffer
         $isValid = parent::isValid();
 
         if ($this->model === null)
-            $this->setError("Offer: missing required attribute 'model'");
+            $this->addError("Offer: missing required attribute 'model'");
 
         if ($this->vendor === null)
-            $this->setError("Offer: missing required attribute 'vendor'");
+            $this->addError("Offer: missing required attribute 'vendor'");
 
         return $isValid && empty($this->errors);
     }

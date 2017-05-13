@@ -31,15 +31,15 @@ class Outlet
     public function isValid()
     {
         if ($this->id === null)
-            $this->setError("Outlet: missing required attribute 'id'");
+            $this->addError("Outlet: missing required attribute 'id'");
         elseif (!$this->id)
-            $this->setError("Outlet: incorrect value in attribute 'id'");
+            $this->addError("Outlet: incorrect value in attribute 'id'");
 
         if ($this->instock !== null && (!is_numeric($this->instock) || (int)$this->instock < 0))
-            $this->setError("Outlet: incorrect value in attribute 'instock'");
+            $this->addError("Outlet: incorrect value in attribute 'instock'");
 
         if ($this->booking !== null && $this->booking !== 'true' && $this->booking !== 'false')
-            $this->setError("Outlet: incorrect value in attribute 'booking'");
+            $this->addError("Outlet: incorrect value in attribute 'booking'");
 
         return empty($this->errors);
     }
@@ -48,10 +48,10 @@ class Outlet
      * @param array $attributes
      * @return $this
      */
-    public function setAttributes($attributes)
+    public function addAttributes($attributes)
     {
         foreach ($attributes as $name => $value) {
-            $this->setField($name, $value);
+            $this->addField($name, $value);
         }
 
         return $this;

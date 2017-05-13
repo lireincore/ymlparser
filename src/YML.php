@@ -147,7 +147,7 @@ class YML
             }
         }
 
-        $shop->setShop(['name' => 'shop', 'attributes' => [], 'value' => null, 'nodes' => $nodes]);
+        $shop->fillShop(['name' => 'shop', 'attributes' => [], 'value' => null, 'nodes' => $nodes]);
 
         return $shop;
     }
@@ -160,7 +160,7 @@ class YML
         $offerNode = $this->parseNode('yml_catalog/shop/offers');
 
         $type = isset($offerNode['attributes']['type']) ? $offerNode['attributes']['type'] : null;
-        $offer = $this->createOffer($type)->setOffer($offerNode);
+        $offer = $this->createOffer($type)->fillOffer($offerNode);
 
         return $offer;
     }
@@ -176,10 +176,11 @@ class YML
         $path = $basePath . '/' . $name;
         $value = '';
         $nodes = [];
+        $isEmpty = $xml->isEmptyElement;
 
         $attributes = $this->parseAttributes();
 
-        if (!$xml->isEmptyElement) {
+        if (!$isEmpty) {
             while ($this->read()) {
                 if ($xml->nodeType == \XMLReader::ELEMENT) {
                     $nodes[] = $this->parseNode($path);

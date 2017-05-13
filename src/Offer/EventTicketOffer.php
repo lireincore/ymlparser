@@ -58,19 +58,19 @@ class EventTicketOffer extends AExtOffer
         $isValid = parent::isValid();
 
         if ($this->name === null)
-            $this->setError("Offer: missing required attribute 'name'");
+            $this->addError("Offer: missing required attribute 'name'");
         
         if ($this->place === null)
-            $this->setError("Offer: missing required attribute 'place'");
+            $this->addError("Offer: missing required attribute 'place'");
         
         if ($this->date === null)
-            $this->setError("Offer: missing required attribute 'date'");
+            $this->addError("Offer: missing required attribute 'date'");
 
         if ($this->isPremiere !== null && $this->isPremiere !== '0' && $this->isPremiere !== '1')
-            $this->setError("Offer: incorrect value in attribute 'is_premiere'");
+            $this->addError("Offer: incorrect value in attribute 'is_premiere'");
 
         if ($this->isKids !== null && $this->isKids !== '0' && $this->isKids !== '1')
-            $this->setError("Offer: incorrect value in attribute 'is_kids'");
+            $this->addError("Offer: incorrect value in attribute 'is_kids'");
 
         return $isValid && empty($this->errors);
     }

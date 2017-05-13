@@ -28,12 +28,12 @@ class Param
     public function isValid()
     {
         if ($this->name === null)
-            $this->setError("Param: missing required attribute 'name'");
+            $this->addError("Param: missing required attribute 'name'");
         elseif (!$this->name)
-            $this->setError("Param: incorrect value in attribute 'name'");
+            $this->addError("Param: incorrect value in attribute 'name'");
 
         if (!$this->value)
-            $this->setError("Param: incorrect value");
+            $this->addError("Param: incorrect value");
 
         return empty($this->errors);
     }
@@ -42,10 +42,10 @@ class Param
      * @param array $attributes
      * @return $this
      */
-    public function setAttributes($attributes)
+    public function addAttributes($attributes)
     {
         foreach ($attributes as $name => $value) {
-            $this->setField($name, $value);
+            $this->addField($name, $value);
         }
 
         return $this;

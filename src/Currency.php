@@ -30,17 +30,17 @@ class Currency
     public function isValid()
     {
         if ($this->id === null)
-            $this->setError("Currency: missing required attribute 'id'");
+            $this->addError("Currency: missing required attribute 'id'");
         elseif (!in_array($this->id, ['RUR', 'RUB', 'UAH', 'BYN', 'BYR', 'KZT', 'USD', 'EUR']))
-            $this->setError("Currency: incorrect value in attribute 'id'");
+            $this->addError("Currency: incorrect value in attribute 'id'");
 
         if ($this->rate === null)
-            $this->setError("Currency: missing required attribute 'rate'");
+            $this->addError("Currency: missing required attribute 'rate'");
         elseif (!(in_array($this->rate, ['CBRF', 'NBU', 'NBK', 'CB']) || (is_numeric($this->rate) && (float)$this->rate > 0)))
-            $this->setError("Currency: incorrect value in attribute 'rate'");
+            $this->addError("Currency: incorrect value in attribute 'rate'");
 
         if ($this->plus !== null && (!is_numeric($this->rate) || (int)$this->plus < 0))
-            $this->setError("Currency: incorrect value in attribute 'plus'");
+            $this->addError("Currency: incorrect value in attribute 'plus'");
 
         return empty($this->errors);
     }
@@ -49,10 +49,10 @@ class Currency
      * @param array $attributes
      * @return $this
      */
-    public function setAttributes($attributes)
+    public function addAttributes($attributes)
     {
         foreach ($attributes as $name => $value) {
-            $this->setField($name, $value);
+            $this->addField($name, $value);
         }
 
         return $this;

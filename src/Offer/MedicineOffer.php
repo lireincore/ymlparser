@@ -38,20 +38,20 @@ class MedicineOffer extends AOffer
         $isValid = parent::isValid();
 
         if ($this->name === null)
-            $this->setError("Offer: missing required attribute 'name'");
+            $this->addError("Offer: missing required attribute 'name'");
 
         if ($this->delivery === null)
-            $this->setError("Offer: missing required attribute 'delivery'");
+            $this->addError("Offer: missing required attribute 'delivery'");
         elseif ($this->delivery !== 'false')
-            $this->setError("Offer: incorrect value in attribute 'delivery'");
+            $this->addError("Offer: incorrect value in attribute 'delivery'");
 
         if ($this->pickup === null)
-            $this->setError("Offer: missing required attribute 'pickup'");
+            $this->addError("Offer: missing required attribute 'pickup'");
         elseif ($this->pickup !== 'true')
-            $this->setError("Offer: incorrect value in attribute 'pickup'");
+            $this->addError("Offer: incorrect value in attribute 'pickup'");
 
         if ($this->cpa !== null && $this->cpa !== '0')
-            $this->setError("Offer: incorrect value in attribute 'cpa'");
+            $this->addError("Offer: incorrect value in attribute 'cpa'");
 
         return $isValid && empty($this->errors);
     }

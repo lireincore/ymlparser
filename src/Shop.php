@@ -94,31 +94,31 @@ class Shop
     public function isValid()
     {
         if ($this->offersCount == 0)
-            $this->setError("Shop: no offers");
+            $this->addError("Shop: no offers");
 
         if ($this->name === null)
-            $this->setError("Shop: missing required attribute 'name'");
+            $this->addError("Shop: missing required attribute 'name'");
         elseif (!$this->name)
-            $this->setError("Shop: incorrect value in attribute 'name'");
+            $this->addError("Shop: incorrect value in attribute 'name'");
 
         if ($this->company === null)
-            $this->setError("Shop: missing required attribute 'company'");
+            $this->addError("Shop: missing required attribute 'company'");
         elseif (!$this->company)
-            $this->setError("Shop: incorrect value in attribute 'company'");
+            $this->addError("Shop: incorrect value in attribute 'company'");
 
         if ($this->url === null)
-            $this->setError("Shop: missing required attribute 'url'");
+            $this->addError("Shop: missing required attribute 'url'");
         elseif (!$this->url)
-            $this->setError("Shop: incorrect value in attribute 'url'");
+            $this->addError("Shop: incorrect value in attribute 'url'");
 
         if (!$this->currencies)
-            $this->setError("Shop: missing required attribute 'currencies'");
+            $this->addError("Shop: missing required attribute 'currencies'");
 
         if (!$this->categories)
-            $this->setError("Shop: missing required attribute 'categories'");
+            $this->addError("Shop: missing required attribute 'categories'");
 
         if ($this->localDeliveryCost !== null && (!is_numeric($this->localDeliveryCost) || ((int)$this->localDeliveryCost) < 0))
-            $this->setError("Shop: incorrect value in attribute 'local_delivery_cost'");
+            $this->addError("Shop: incorrect value in attribute 'local_delivery_cost'");
 
         $subIsValid = true;
         if ($this->currencies) {
@@ -170,10 +170,10 @@ class Shop
      * @param array $shopNode
      * @return $this
      */
-    public function setShop(array $shopNode)
+    public function fillShop(array $shopNode)
     {
         foreach ($shopNode['nodes'] as $attrNode) {
-            $this->setAttribute($attrNode);
+            $this->addAttribute($attrNode);
         }
 
         return $this;
@@ -183,25 +183,25 @@ class Shop
      * @param array $attrNode
      * @return $this
      */
-    public function setAttribute(array $attrNode)
+    public function addAttribute(array $attrNode)
     {
         if ($attrNode['name'] == 'currencies') {
             foreach ($attrNode['nodes'] as $subNode) {
-                $this->addCurrency((new Currency())->setAttributes($subNode['attributes']));
+                $this->addCurrency((new Currency())->addAttributes($subNode['attributes']));
             }
         } elseif ($attrNode['name'] == 'categories') {
             foreach ($attrNode['nodes'] as $subNode) {
-                $this->addCategory((new Category())->setAttributes($subNode['attributes'] + ['name' => $subNode['value']]));
+                $this->addCategory((new Category())->addAttributes($subNode['attributes'] + ['name' => $subNode['value']]));
             }
         } elseif ($attrNode['name'] == 'delivery-options') {
             foreach ($attrNode['nodes'] as $subNode) {
-                $this->addDeliveryOption((new DeliveryOption())->setAttributes($subNode['attributes']));
+                $this->addDeliveryOption((new DeliveryOption())->addAttributes($subNode['attributes']));
             }
         } else {
-            if (!is_null($attrNode['value'])) $this->setField($attrNode['name'], $attrNode['value']);
+            if (!is_null($attrNode['value'])) $this->addField($attrNode['name'], $attrNode['value']);
             if (!empty($attrNode['attributes'])) {
                 foreach ($attrNode['attributes'] as $name => $value) {
-                    $this->setField($name, $value);
+                    $this->addField($name, $value);
                 }
             }
         }

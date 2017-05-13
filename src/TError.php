@@ -31,7 +31,7 @@ trait TError
     /**
      * @param $errorMessage
      */
-    protected function setError($errorMessage)
+    protected function addError($errorMessage)
     {
         $this->errors[] = $errorMessage;
     }

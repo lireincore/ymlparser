@@ -145,52 +145,52 @@ abstract class AOffer
     public function isValid()
     {
         if ($this->id === null)
-            $this->setError("Offer: missing required attribute 'id'");
+            $this->addError("Offer: missing required attribute 'id'");
         elseif (!$this->id)
-            $this->setError("Offer: incorrect value in attribute 'id'");
+            $this->addError("Offer: incorrect value in attribute 'id'");
 
         if ($this->bid !== null && (!is_numeric($this->bid) || (int)$this->bid <= 0))
-            $this->setError("Offer: incorrect value in attribute 'bid'");
+            $this->addError("Offer: incorrect value in attribute 'bid'");
 
         if ($this->cbid !== null && (!is_numeric($this->cbid) || (int)$this->cbid <= 0))
-            $this->setError("Offer: incorrect value in attribute 'cbid'");
+            $this->addError("Offer: incorrect value in attribute 'cbid'");
 
         if ($this->available === null) {
             if ($this->getPickup())
-                $this->setError("Offer: attribute 'available' is required when 'pickup' is true");
+                $this->addError("Offer: attribute 'available' is required when 'pickup' is true");
         }
         elseif ($this->available !== 'true' && $this->available !== 'false')
-            $this->setError("Offer: incorrect value in attribute 'available'");
+            $this->addError("Offer: incorrect value in attribute 'available'");
 
         if ($this->price === null)
-            $this->setError("Offer: missing required attribute 'price'");
+            $this->addError("Offer: missing required attribute 'price'");
         elseif (!is_numeric($this->price) || (float)$this->price <= 0)
-            $this->setError("Offer: incorrect value in attribute 'price'");
+            $this->addError("Offer: incorrect value in attribute 'price'");
 
         if ($this->oldprice !== null && (!is_numeric($this->oldprice) || (float)$this->oldprice <= (float)$this->price))
-            $this->setError("Offer: incorrect value in attribute 'oldprice'");
+            $this->addError("Offer: incorrect value in attribute 'oldprice'");
         
         if ($this->currencyId === null)
-            $this->setError("Offer: missing required attribute 'currencyId'");
+            $this->addError("Offer: missing required attribute 'currencyId'");
         elseif (!$this->currencyId)
-            $this->setError("Offer: incorrect value in attribute 'currencyId'");
+            $this->addError("Offer: incorrect value in attribute 'currencyId'");
 
         if ($this->categoryId === null)
-            $this->setError("Offer: missing required attribute 'categoryId'");
+            $this->addError("Offer: missing required attribute 'categoryId'");
         elseif (!$this->categoryId)
-            $this->setError("Offer: incorrect value in attribute 'categoryId'");
+            $this->addError("Offer: incorrect value in attribute 'categoryId'");
 
         if ($this->store !== null && $this->store !== 'true' && $this->store !== 'false')
-            $this->setError("Offer: incorrect value in attribute 'store'");
+            $this->addError("Offer: incorrect value in attribute 'store'");
 
         if ($this->pickup !== null && $this->pickup !== 'true' && $this->pickup !== 'false')
-            $this->setError("Offer: incorrect value in attribute 'pickup'");
+            $this->addError("Offer: incorrect value in attribute 'pickup'");
 
         if ($this->delivery !== null && $this->delivery !== 'true' && $this->delivery !== 'false')
-            $this->setError("Offer: incorrect value in attribute 'delivery'");
+            $this->addError("Offer: incorrect value in attribute 'delivery'");
 
         if ($this->weight !== null && (!is_numeric($this->weight) || (float)$this->weight <= 0))
-            $this->setError("Offer: incorrect value in attribute 'weight'");
+            $this->addError("Offer: incorrect value in attribute 'weight'");
 
         $subIsValid = true;
         if ($this->outlets) {
@@ -232,14 +232,14 @@ abstract class AOffer
      * @param array $offerNode
      * @return $this
      */
-    public function setOffer(array $offerNode)
+    public function fillOffer(array $offerNode)
     {
         foreach ($offerNode['attributes'] as $name => $value) {
-            $this->setField($name, $value);
+            $this->addField($name, $value);
         }
 
         foreach ($offerNode['nodes'] as $attrNode) {
-            $this->setAttribute($attrNode);
+            $this->addAttribute($attrNode);
         }
 
         return $this;
@@ -249,23 +249,23 @@ abstract class AOffer
      * @param array $attrNode
      * @return $this
      */
-    public function setAttribute(array $attrNode)
+    public function addAttribute(array $attrNode)
     {
         if ($attrNode['name'] == 'outlets') {
             foreach ($attrNode['nodes'] as $subNode) {
-                $this->addOutlet((new Outlet())->setAttributes($subNode['attributes']));
+                $this->addOutlet((new Outlet())->addAttributes($subNode['attributes']));
             }
         } elseif ($attrNode['name'] == 'picture') {
             $this->addPicture($attrNode['value']);
         } elseif ($attrNode['name'] == 'barcode') {
             $this->addBarcode($attrNode['value']);
         } elseif ($attrNode['name'] == 'param') {
-            $this->addParam((new Param())->setAttributes($attrNode['attributes'] + ['value' => $attrNode['value']]));
+            $this->addParam((new Param())->addAttributes($attrNode['attributes'] + ['value' => $attrNode['value']]));
         } else {
-            if (!is_null($attrNode['value'])) $this->setField($attrNode['name'], $attrNode['value']);
+            if (!is_null($attrNode['value'])) $this->addField($attrNode['name'], $attrNode['value']);
             if (!empty($attrNode['attributes'])) {
                 foreach ($attrNode['attributes'] as $name => $value) {
-                    $this->setField($name, $value);
+                    $this->addField($name, $value);
                 }
             }
         }
