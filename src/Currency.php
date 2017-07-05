@@ -39,7 +39,7 @@ class Currency
         elseif (!(in_array($this->rate, ['CBRF', 'NBU', 'NBK', 'CB']) || (is_numeric($this->rate) && (float)$this->rate > 0)))
             $this->addError("Currency: incorrect value in attribute 'rate'");
 
-        if ($this->plus !== null && (!is_numeric($this->rate) || (int)$this->plus < 0))
+        if ($this->plus !== null && (int)$this->plus < 0)
             $this->addError("Currency: incorrect value in attribute 'plus'");
 
         return empty($this->errors);
