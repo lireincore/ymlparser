@@ -55,7 +55,7 @@ abstract class AExtOffer extends AOffer
         return array_merge(parent::getAttributesList(), [
             //attributes
             'fee',
-            //subnodes
+            //subNodes
             'market_category', 'delivery-options', 'local_delivery_cost', 'manufacturer_warranty', 'adult', 'age', 'downloadable'
         ]);
     }
@@ -67,32 +67,35 @@ abstract class AExtOffer extends AOffer
     {
         $isValid = parent::isValid();
 
-        if ($this->fee !== null && (!is_numeric($this->fee) || (int)$this->fee <= 0))
+        if ($this->fee !== null && (!is_numeric($this->fee) || (int)$this->fee <= 0)) {
             $this->addError("Offer: incorrect value in attribute 'fee'");
-
-        if ($this->localDeliveryCost !== null && (!is_numeric($this->localDeliveryCost) || ((int)$this->localDeliveryCost) < 0))
+        }
+        if ($this->localDeliveryCost !== null && (!is_numeric($this->localDeliveryCost) || ((int)$this->localDeliveryCost) < 0)) {
             $this->addError("Offer: incorrect value in attribute 'local_delivery_cost'");
-
-        if ($this->delivery === true && !$this->deliveryOptions && $this->localDeliveryCost == null)
+        }
+        if ($this->delivery === true && !$this->deliveryOptions && $this->localDeliveryCost == null) {
             $this->addError("Offer: attribute 'delivery-options' is required when 'delivery' is true");
-
-        if ($this->manufacturerWarranty !== null && $this->manufacturerWarranty !== 'true' && $this->manufacturerWarranty !== 'false')
+        }
+        if ($this->manufacturerWarranty !== null && $this->manufacturerWarranty !== 'true' && $this->manufacturerWarranty !== 'false') {
             $this->addError("Offer: incorrect value in attribute 'manufacturer_warranty'");
-
-        if ($this->downloadable !== null && $this->downloadable !== 'true' && $this->downloadable !== 'false')
+        }
+        if ($this->downloadable !== null && $this->downloadable !== 'true' && $this->downloadable !== 'false') {
             $this->addError("Offer: incorrect value in attribute 'downloadable'");
-
-        if ($this->adult !== null && $this->adult !== 'true' && $this->adult !== 'false')
+        }
+        if ($this->adult !== null && $this->adult !== 'true' && $this->adult !== 'false') {
             $this->addError("Offer: incorrect value in attribute 'adult'");
-
+        }
         $subIsValid = true;
         if ($this->deliveryOptions) {
             foreach ($this->deliveryOptions as $deliveryOption) {
-                if (!$deliveryOption->isValid()) $subIsValid = false;
+                if (!$deliveryOption->isValid()) {
+                    $subIsValid = false;
+                }
             }
         }
-        if ($this->age && !$this->age->isValid()) $subIsValid = false;
-
+        if ($this->age && !$this->age->isValid()) {
+            $subIsValid = false;
+        }
         return $isValid && empty($this->errors) && $subIsValid;
     }
 
@@ -101,18 +104,18 @@ abstract class AExtOffer extends AOffer
      */
     public function getErrors()
     {
-        $errors = parent::getErrors();
+        $errors[] = parent::getErrors();
 
         if ($this->deliveryOptions) {
             foreach ($this->deliveryOptions as $deliveryOption) {
-                $errors = array_merge($errors, $deliveryOption->getErrors());
+                $errors[] = $deliveryOption->getErrors();
             }
         }
         if ($this->age) {
-            $errors = array_merge($errors, $this->age->getErrors());
+            $errors[] = $this->age->getErrors();
         }
 
-        return $errors;
+        return 1 !== count($errors) ? call_user_func_array('array_merge', $errors) : $errors[0];
     }
 
     /**
@@ -121,11 +124,11 @@ abstract class AExtOffer extends AOffer
      */
     public function addAttribute(array $attrNode)
     {
-        if ($attrNode['name'] == 'delivery-options') {
+        if ($attrNode['name'] === 'delivery-options') {
             foreach ($attrNode['nodes'] as $subNode) {
                 $this->addDeliveryOption((new DeliveryOption())->addAttributes($subNode['attributes']));
             }
-        } elseif ($attrNode['name'] == 'age') {
+        } elseif ($attrNode['name'] === 'age') {
             $this->setAge((new Age())->addAttributes($attrNode['attributes'] + ['value' => $attrNode['value']]));
         } else {
             parent::addAttribute($attrNode);
@@ -196,7 +199,7 @@ abstract class AExtOffer extends AOffer
      */
     public function getDeliveryOptions()
     {
-        return $this->deliveryOptions ? $this->deliveryOptions : null;
+        return $this->deliveryOptions ?: null;
     }
 
     /**

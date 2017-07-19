@@ -60,7 +60,7 @@ abstract class ABookOffer extends AExtOffer
     public function getAttributesList()
     {
         return array_merge(parent::getAttributesList(), [
-            //subnodes
+            //subNodes
             'name', 'author', 'publisher', 'series', 'year', 'ISBN', 'volume', 'part', 'language', 'table_of_contents'
         ]);
     }
@@ -72,18 +72,18 @@ abstract class ABookOffer extends AExtOffer
     {
         $isValid = parent::isValid();
 
-        if ($this->name === null)
+        if ($this->name === null){
             $this->addError("Offer: missing required attribute 'name'");
-
-        if ($this->year !== null && !is_numeric($this->year))
+        }
+        if ($this->year !== null && !is_numeric($this->year)){
             $this->addError("Offer: incorrect value in attribute 'year'");
-
-        if ($this->volume !== null && (!is_numeric($this->volume) || (int)$this->volume <= 0))
+        }
+        if ($this->volume !== null && (!is_numeric($this->volume) || (int)$this->volume <= 0)){
             $this->addError("Offer: incorrect value in attribute 'volume'");
-
-        if ($this->part !== null && (!is_numeric($this->part) || (int)$this->part <= 0))
+        }
+        if ($this->part !== null && (!is_numeric($this->part) || (int)$this->part <= 0)){
             $this->addError("Offer: incorrect value in attribute 'part'");
-
+        }
         return $isValid && empty($this->errors);
     }
 
