@@ -45,6 +45,11 @@ class Shop
     protected $email;
 
     /**
+     * @var string
+     */
+    protected $phone;
+
+    /**
      * @var Currency[]
      */
     protected $currencies = [];
@@ -81,10 +86,10 @@ class Shop
     public function getAttributesList()
     {
         return [
-            //subnodes
+            //subNodes
             'name', 'company', 'url', 'platform', 'version', 'agency', //offers,
             'email', 'currencies', 'categories', 'delivery-options',
-            'local_delivery_cost', 'cpa',
+            'local_delivery_cost', 'cpa', 'phone'
         ];
     }
 
@@ -93,47 +98,63 @@ class Shop
      */
     public function isValid()
     {
-        if ($this->offersCount == 0)
-            $this->addError("Shop: no offers");
+        if ($this->offersCount === 0) {
+            $this->addError('Shop: no offers');
+        }
 
-        if ($this->name === null)
+
+        if ($this->name === null) {
             $this->addError("Shop: missing required attribute 'name'");
-        elseif (!$this->name)
+        } elseif (!$this->name) {
             $this->addError("Shop: incorrect value in attribute 'name'");
+        }
 
-        if ($this->company === null)
+        if ($this->company === null) {
             $this->addError("Shop: missing required attribute 'company'");
-        elseif (!$this->company)
+        } elseif (!$this->company) {
             $this->addError("Shop: incorrect value in attribute 'company'");
+        }
 
-        if ($this->url === null)
+        if ($this->url === null) {
             $this->addError("Shop: missing required attribute 'url'");
-        elseif (!$this->url)
+        } elseif (!$this->url) {
             $this->addError("Shop: incorrect value in attribute 'url'");
+        }
 
-        if (!$this->currencies)
+        if (!$this->currencies) {
             $this->addError("Shop: missing required attribute 'currencies'");
+        }
 
-        if (!$this->categories)
+        if (!$this->categories) {
             $this->addError("Shop: missing required attribute 'categories'");
+        }
 
-        if ($this->localDeliveryCost !== null && (!is_numeric($this->localDeliveryCost) || ((int)$this->localDeliveryCost) < 0))
+
+        if ($this->localDeliveryCost !== null && (!is_numeric($this->localDeliveryCost) || ((int)$this->localDeliveryCost) < 0)) {
             $this->addError("Shop: incorrect value in attribute 'local_delivery_cost'");
+        }
+
 
         $subIsValid = true;
         if ($this->currencies) {
             foreach ($this->currencies as $currency) {
-                if (!$currency->isValid()) $subIsValid = false;
+                if (!$currency->isValid()) {
+                    $subIsValid = false;
+                }
             }
         }
         if ($this->categories) {
             foreach ($this->categories as $category) {
-                if (!$category->isValid()) $subIsValid = false;
+                if (!$category->isValid()) {
+                    $subIsValid = false;
+                }
             }
         }
         if ($this->deliveryOptions) {
             foreach ($this->deliveryOptions as $deliveryOption) {
-                if (!$deliveryOption->isValid()) $subIsValid = false;
+                if (!$deliveryOption->isValid()) {
+                    $subIsValid = false;
+                }
             }
         }
 
@@ -145,23 +166,25 @@ class Shop
      */
     public function getErrors()
     {
-        $errors = $this->errors;
+        $errors[] = $this->errors;
 
         if ($this->currencies) {
             foreach ($this->currencies as $currency) {
-                $errors = array_merge($errors, $currency->getErrors());
+                $errors[] = $currency->getErrors();
             }
         }
         if ($this->categories) {
             foreach ($this->categories as $category) {
-                $errors = array_merge($errors, $category->getErrors());
+                $errors[] = $category->getErrors();
             }
         }
         if ($this->deliveryOptions) {
             foreach ($this->deliveryOptions as $deliveryOption) {
-                $errors = array_merge($errors, $deliveryOption->getErrors());
+                $errors[] = $deliveryOption->getErrors();
             }
         }
+
+        $errors = count($errors) > 1 ? call_user_func_array('array_merge', $errors) : $errors[0];
 
         return $errors;
     }
@@ -185,20 +208,22 @@ class Shop
      */
     public function addAttribute(array $attrNode)
     {
-        if ($attrNode['name'] == 'currencies') {
+        if ($attrNode['name'] === 'currencies') {
             foreach ($attrNode['nodes'] as $subNode) {
                 $this->addCurrency((new Currency())->addAttributes($subNode['attributes']));
             }
-        } elseif ($attrNode['name'] == 'categories') {
+        } elseif ($attrNode['name'] === 'categories') {
             foreach ($attrNode['nodes'] as $subNode) {
                 $this->addCategory((new Category())->addAttributes($subNode['attributes'] + ['name' => $subNode['value']]));
             }
-        } elseif ($attrNode['name'] == 'delivery-options') {
+        } elseif ($attrNode['name'] === 'delivery-options') {
             foreach ($attrNode['nodes'] as $subNode) {
                 $this->addDeliveryOption((new DeliveryOption())->addAttributes($subNode['attributes']));
             }
         } else {
-            if (!is_null($attrNode['value'])) $this->addField($attrNode['name'], $attrNode['value']);
+            if (null !== $attrNode['value']) {
+                $this->addField($attrNode['name'], $attrNode['value']);
+            }
             if (!empty($attrNode['attributes'])) {
                 foreach ($attrNode['attributes'] as $name => $value) {
                     $this->addField($name, $value);
@@ -215,8 +240,7 @@ class Shop
     public function getData()
     {
         $data = $this->toArray();
-        unset($data['errors']);
-        unset($data['offersCount']);
+        unset($data['errors'], $data['offersCount']);
 
         return $data;
     }
@@ -293,7 +317,6 @@ class Shop
     public function setPlatform($value)
     {
         $this->platform = $value;
-
         return $this;
     }
 
@@ -312,7 +335,6 @@ class Shop
     public function setVersion($value)
     {
         $this->version = $value;
-
         return $this;
     }
 
@@ -331,7 +353,6 @@ class Shop
     public function setAgency($value)
     {
         $this->agency = $value;
-
         return $this;
     }
 
@@ -350,7 +371,24 @@ class Shop
     public function setEmail($value)
     {
         $this->email = $value;
+        return $this;
+    }
 
+    /**
+     * @return string
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * @param string $phone
+     * @return $this
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
         return $this;
     }
 
@@ -368,7 +406,7 @@ class Shop
      */
     public function getCurrencies()
     {
-        return $this->currencies ? $this->currencies : null;
+        return $this->currencies ?: null;
     }
 
     /**
@@ -412,7 +450,8 @@ class Shop
     {
         if (array_key_exists($id, $this->categories)
             && !is_null($parentId = $this->categories[$id]->getParentId())
-            && array_key_exists($parentId, $this->categories)) {
+            && array_key_exists($parentId, $this->categories)
+        ) {
             return $this->categories[$parentId];
         }
 
@@ -445,7 +484,7 @@ class Shop
      */
     public function getCategories()
     {
-        return $this->categories ? $this->categories : null;
+        return $this->categories ?: null;
     }
 
     /**
@@ -477,7 +516,7 @@ class Shop
      */
     public function getDeliveryOptions()
     {
-        return $this->deliveryOptions ? $this->deliveryOptions : null;
+        return $this->deliveryOptions ?: null;
     }
 
     /**
@@ -528,7 +567,7 @@ class Shop
      */
     public function getCpa()
     {
-        return $this->cpa === null ? null : ($this->cpa === '1' ? true : false);
+        return $this->cpa === null ? null : ($this->cpa === '1');
     }
 
     /**
@@ -556,7 +595,7 @@ class Shop
      */
     public function setOffersCount($value)
     {
-        $this->offersCount = $value;
+        $this->offersCount = (int)$value;
 
         return $this;
     }
