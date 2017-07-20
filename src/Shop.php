@@ -89,7 +89,7 @@ class Shop
             //subNodes
             'name', 'company', 'url', 'platform', 'version', 'agency', //offers,
             'email', 'currencies', 'categories', 'delivery-options',
-            'local_delivery_cost', 'cpa', 'shop'
+            'local_delivery_cost', 'cpa', 'phone'
         ];
     }
 
@@ -548,7 +548,7 @@ class Shop
      */
     public function getLocalDeliveryCost()
     {
-        return $this->localDeliveryCost === null ?: (int)$this->localDeliveryCost;
+        return $this->localDeliveryCost === null ? null : (int)$this->localDeliveryCost;
     }
 
     /**
