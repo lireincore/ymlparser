@@ -1,6 +1,7 @@
 <?php
 
 namespace LireinCore\YMLParser\Offer;
+
 use \LireinCore\YMLParser\TYML;
 use \LireinCore\YMLParser\TError;
 
@@ -32,17 +33,17 @@ class Outlet
      */
     public function isValid()
     {
-        if ($this->id === null){
+        if ($this->id === null) {
             $this->addError("Outlet: missing required attribute 'id'");
         } elseif (!$this->id) {
             $this->addError("Outlet: incorrect value in attribute 'id'");
         }
 
-        if ($this->instock !== null && (!is_numeric($this->instock) || (int)$this->instock < 0)){
+        if ($this->instock !== null && (!is_numeric($this->instock) || (int)$this->instock < 0)) {
             $this->addError("Outlet: incorrect value in attribute 'instock'");
         }
 
-        if ($this->booking !== null && $this->booking !== 'true' && $this->booking !== 'false'){
+        if ($this->booking !== null && $this->booking !== 'true' && $this->booking !== 'false') {
             $this->addError("Outlet: incorrect value in attribute 'booking'");
         }
 

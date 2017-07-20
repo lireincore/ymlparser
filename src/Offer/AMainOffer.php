@@ -66,19 +66,19 @@ abstract class AMainOffer extends AExtOffer
     {
         $isValid = parent::isValid();
 
-        if ($this->minQuantity !== null && (!is_numeric($this->minQuantity) || (int)$this->minQuantity <= 0)){
+        if ($this->minQuantity !== null && (!is_numeric($this->minQuantity) || (int)$this->minQuantity <= 0)) {
             $this->addError("Offer: incorrect value in attribute 'min-quantity'");
         }
 
-        if ($this->stepQuantity !== null && (!is_numeric($this->stepQuantity) || (int)$this->stepQuantity <= 0)){
+        if ($this->stepQuantity !== null && (!is_numeric($this->stepQuantity) || (int)$this->stepQuantity <= 0)) {
             $this->addError("Offer: incorrect value in attribute 'step-quantity'");
         }
 
-        if ($this->groupId !== null && !is_numeric($this->groupId)){
+        if ($this->groupId !== null && !is_numeric($this->groupId)) {
             $this->addError("Offer: incorrect value in attribute 'group_id'");
         }
 
-        if ($this->from !== null && $this->from !== 'true' && $this->from !== 'false'){
+        if ($this->from !== null && $this->from !== 'true' && $this->from !== 'false') {
             $this->addError("Price: incorrect value in attribute 'from'");
         }
 

@@ -148,63 +148,63 @@ abstract class AOffer
      */
     public function isValid()
     {
-        if ($this->id === null){
+        if ($this->id === null) {
             $this->addError("Offer: missing required attribute 'id'");
-        } elseif (!$this->id){
+        } elseif (!$this->id) {
             $this->addError("Offer: incorrect value in attribute 'id'");
         }
 
-        if ($this->bid !== null && (!is_numeric($this->bid) || (int)$this->bid <= 0)){
+        if ($this->bid !== null && (!is_numeric($this->bid) || (int)$this->bid <= 0)) {
             $this->addError("Offer: incorrect value in attribute 'bid'");
         }
 
-        if ($this->cbid !== null && (!is_numeric($this->cbid) || (int)$this->cbid <= 0)){
+        if ($this->cbid !== null && (!is_numeric($this->cbid) || (int)$this->cbid <= 0)) {
             $this->addError("Offer: incorrect value in attribute 'cbid'");
         }
 
         if ($this->available === null) {
-            if ($this->getPickup()){
+            if ($this->getPickup()) {
                 $this->addError("Offer: attribute 'available' is required when 'pickup' is true");
             }
-        } elseif ($this->available !== 'true' && $this->available !== 'false'){
+        } elseif ($this->available !== 'true' && $this->available !== 'false') {
             $this->addError("Offer: incorrect value in attribute 'available'");
         }
 
-        if ($this->price === null){
+        if ($this->price === null) {
             $this->addError("Offer: missing required attribute 'price'");
-        } elseif (!is_numeric($this->price) || (float)$this->price <= 0){
+        } elseif (!is_numeric($this->price) || (float)$this->price <= 0) {
             $this->addError("Offer: incorrect value in attribute 'price'");
         }
 
-        if ($this->oldprice !== null && (!is_numeric($this->oldprice) || (float)$this->oldprice <= (float)$this->price)){
+        if ($this->oldprice !== null && (!is_numeric($this->oldprice) || (float)$this->oldprice <= (float)$this->price)) {
             $this->addError("Offer: incorrect value in attribute 'oldprice'");
         }
-        
-        if ($this->currencyId === null){
+
+        if ($this->currencyId === null) {
             $this->addError("Offer: missing required attribute 'currencyId'");
-        } elseif (!$this->currencyId){
+        } elseif (!$this->currencyId) {
             $this->addError("Offer: incorrect value in attribute 'currencyId'");
         }
 
-        if ($this->categoryId === null){
+        if ($this->categoryId === null) {
             $this->addError("Offer: missing required attribute 'categoryId'");
-        } elseif (!$this->categoryId){
+        } elseif (!$this->categoryId) {
             $this->addError("Offer: incorrect value in attribute 'categoryId'");
         }
 
-        if ($this->store !== null && $this->store !== 'true' && $this->store !== 'false'){
+        if ($this->store !== null && $this->store !== 'true' && $this->store !== 'false') {
             $this->addError("Offer: incorrect value in attribute 'store'");
         }
 
-        if ($this->pickup !== null && $this->pickup !== 'true' && $this->pickup !== 'false'){
+        if ($this->pickup !== null && $this->pickup !== 'true' && $this->pickup !== 'false') {
             $this->addError("Offer: incorrect value in attribute 'pickup'");
         }
 
-        if ($this->delivery !== null && $this->delivery !== 'true' && $this->delivery !== 'false'){
+        if ($this->delivery !== null && $this->delivery !== 'true' && $this->delivery !== 'false') {
             $this->addError("Offer: incorrect value in attribute 'delivery'");
         }
 
-        if ($this->weight !== null && (!is_numeric($this->weight) || (float)$this->weight <= 0)){
+        if ($this->weight !== null && (!is_numeric($this->weight) || (float)$this->weight <= 0)) {
             $this->addError("Offer: incorrect value in attribute 'weight'");
         }
 
@@ -245,7 +245,7 @@ abstract class AOffer
             }
         }
 
-        return 1 === count($errors)?$errors[0]:call_user_func_array('array_merge', $errors);
+        return 1 === count($errors) ? $errors[0] : call_user_func_array('array_merge', $errors);
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 namespace LireinCore\Exception;
 /**
  * Created by PhpStorm.

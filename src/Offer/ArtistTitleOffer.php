@@ -62,11 +62,11 @@ class ArtistTitleOffer extends AExtOffer
     {
         $isValid = parent::isValid();
 
-        if ($this->title === null){
+        if ($this->title === null) {
             $this->addError("Offer: missing required attribute 'title'");
         }
 
-        if ($this->year !== null && !is_numeric($this->year)){
+        if ($this->year !== null && !is_numeric($this->year)) {
             $this->addError("Offer: incorrect value in attribute 'year'");
         }
 

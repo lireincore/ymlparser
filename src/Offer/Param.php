@@ -1,6 +1,7 @@
 <?php
 
 namespace LireinCore\YMLParser\Offer;
+
 use \LireinCore\YMLParser\TYML;
 use \LireinCore\YMLParser\TError;
 
@@ -9,7 +10,7 @@ class Param
 {
     use TYML;
     use TError;
-    
+
     /**
      * @var string
      */
@@ -30,13 +31,13 @@ class Param
      */
     public function isValid()
     {
-        if ($this->name === null){
+        if ($this->name === null) {
             $this->addError("Param: missing required attribute 'name'");
         } elseif (!$this->name) {
             $this->addError("Param: incorrect value in attribute 'name'");
         }
 
-        if (!$this->value){
+        if (!$this->value) {
             $this->addError('Param: incorrect value');
         }
 

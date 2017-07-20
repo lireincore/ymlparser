@@ -29,11 +29,9 @@ class DeliveryOption
      */
     public function isValid()
     {
-        if ($this->cost === null){
+        if ($this->cost === null) {
             $this->addError("DeliveryOption: missing required attribute 'cost'");
-        }
-
-        elseif (!is_numeric($this->cost) || ((int)$this->cost) < 0){
+        } elseif (!is_numeric($this->cost) || ((int)$this->cost) < 0) {
             $this->addError("DeliveryOption: incorrect value in attribute 'cost'");
         }
 
@@ -41,7 +39,7 @@ class DeliveryOption
             $this->addError("DeliveryOption: missing required attribute 'days'");
         }
 
-        if ($this->orderBefore !== null && (!is_numeric($this->orderBefore) || (int)$this->orderBefore < 0 || (int)$this->orderBefore > 24)){
+        if ($this->orderBefore !== null && (!is_numeric($this->orderBefore) || (int)$this->orderBefore < 0 || (int)$this->orderBefore > 24)) {
             $this->addError("DeliveryOption: incorrect value in attribute 'order-before'");
         }
 

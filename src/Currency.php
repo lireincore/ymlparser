@@ -34,13 +34,12 @@ class Currency
         } elseif (!in_array($this->id, ['RUR', 'RUB', 'UAH', 'BYN', 'BYR', 'KZT', 'USD', 'EUR'], true)) {
             $this->addError("Currency: incorrect value in attribute 'id'");
         }
-        if ($this->rate === null){
+        if ($this->rate === null) {
             $this->addError("Currency: missing required attribute 'rate'");
-        }
-        elseif (!(in_array($this->rate, ['CBRF', 'NBU', 'NBK', 'CB'], true) || (is_numeric($this->rate) && (float)$this->rate > 0))){
+        } elseif (!(in_array($this->rate, ['CBRF', 'NBU', 'NBK', 'CB'], true) || (is_numeric($this->rate) && (float)$this->rate > 0))) {
             $this->addError("Currency: incorrect value in attribute 'rate'");
         }
-        if ($this->plus !== null && (int)$this->plus < 0){
+        if ($this->plus !== null && (int)$this->plus < 0) {
             $this->addError("Currency: incorrect value in attribute 'plus'");
         }
         return empty($this->errors);

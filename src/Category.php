@@ -27,13 +27,12 @@ class Category
      */
     public function isValid()
     {
-        if ($this->id === null){
+        if ($this->id === null) {
             $this->addError("Category: missing required attribute 'id'");
-        }
-        elseif (!is_numeric($this->id) || (int)$this->id <= 0){
+        } elseif (!is_numeric($this->id) || (int)$this->id <= 0) {
             $this->addError("Category: incorrect value in attribute 'id'");
         }
-        if ($this->parentId !== null && (!is_numeric($this->parentId) || (int)$this->parentId <= 0)){
+        if ($this->parentId !== null && (!is_numeric($this->parentId) || (int)$this->parentId <= 0)) {
             $this->addError("Category: incorrect value in attribute 'parentId'");
         }
         if (!$this->name) {

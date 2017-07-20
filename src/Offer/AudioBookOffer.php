@@ -13,7 +13,7 @@ class AudioBookOffer extends ABookOffer
      * @var string
      */
     protected $performanceType;
-    
+
     /**
      * @var string
      */
