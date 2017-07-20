@@ -2,6 +2,10 @@
 
 namespace LireinCore\YMLParser;
 
+/**
+ * Trait TYML
+ * @package LireinCore\YMLParser
+ */
 trait TYML
 {
     /**

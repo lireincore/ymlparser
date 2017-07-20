@@ -25,7 +25,7 @@ class MedicineOffer extends AOffer
     public function getAttributesList()
     {
         return array_merge(parent::getAttributesList(), [
-            //subnodes
+            //subNodes
             'name', 'vendor', 'vendorCode'
         ]);
     }
@@ -37,21 +37,25 @@ class MedicineOffer extends AOffer
     {
         $isValid = parent::isValid();
 
-        if ($this->name === null)
+        if ($this->name === null){
             $this->addError("Offer: missing required attribute 'name'");
+        }
 
-        if ($this->delivery === null)
+        if ($this->delivery === null){
             $this->addError("Offer: missing required attribute 'delivery'");
-        elseif ($this->delivery !== 'false')
+        } elseif ($this->delivery !== 'false'){
             $this->addError("Offer: incorrect value in attribute 'delivery'");
+        }
 
-        if ($this->pickup === null)
+        if ($this->pickup === null){
             $this->addError("Offer: missing required attribute 'pickup'");
-        elseif ($this->pickup !== 'true')
+        } elseif ($this->pickup !== 'true'){
             $this->addError("Offer: incorrect value in attribute 'pickup'");
+        }
 
-        if ($this->cpa !== null && $this->cpa !== '0')
+        if ($this->cpa !== null && $this->cpa !== '0'){
             $this->addError("Offer: incorrect value in attribute 'cpa'");
+        }
 
         return $isValid && empty($this->errors);
     }

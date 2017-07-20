@@ -50,7 +50,7 @@ class ArtistTitleOffer extends AExtOffer
     public function getAttributesList()
     {
         return array_merge(parent::getAttributesList(), [
-            //subnodes
+            //subNodes
             'artist', 'title', 'year', 'media', 'starring', 'director', 'originalName', 'country'
         ]);
     }
@@ -62,11 +62,13 @@ class ArtistTitleOffer extends AExtOffer
     {
         $isValid = parent::isValid();
 
-        if ($this->title === null)
+        if ($this->title === null){
             $this->addError("Offer: missing required attribute 'title'");
+        }
 
-        if ($this->year !== null && !is_numeric($this->year))
+        if ($this->year !== null && !is_numeric($this->year)){
             $this->addError("Offer: incorrect value in attribute 'year'");
+        }
 
         return $isValid && empty($this->errors);
     }

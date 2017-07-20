@@ -80,7 +80,7 @@ class TourOffer extends AExtOffer
     public function getAttributesList()
     {
         return array_merge(parent::getAttributesList(), [
-            //subnodes
+            //subNodes
             'name', 'worldRegion', 'country', 'region', 'days', 'dataTour',
             'hotel_stars', 'room', 'meal', 'included', 'transport',
             'price_min', 'price_max', 'options'
@@ -94,26 +94,32 @@ class TourOffer extends AExtOffer
     {
         $isValid = parent::isValid();
 
-        if ($this->name === null)
+        if ($this->name === null) {
             $this->addError("Offer: missing required attribute 'name'");
-
-        if ($this->days === null)
+        }
+        if ($this->days === null) {
             $this->addError("Offer: missing required attribute 'days'");
-        elseif (!is_numeric($this->days) || (int)$this->days <= 0)
+        } elseif (!is_numeric($this->days) || (int)$this->days <= 0) {
             $this->addError("Offer: incorrect value in attribute 'days'");
+        }
 
-        if ($this->included === null)
+        if ($this->included === null) {
             $this->addError("Offer: missing required attribute 'included'");
+        }
 
-        if ($this->transport === null)
+        if ($this->transport === null) {
             $this->addError("Offer: missing required attribute 'transport'");
+        }
 
-        if ($this->priceMin !== null && (!is_numeric($this->priceMin) || (float)$this->priceMin <= 0))
+        if ($this->priceMin !== null && (!is_numeric($this->priceMin) || (float)$this->priceMin <= 0)) {
             $this->addError("Offer: incorrect value in attribute 'price_min'");
+        }
 
         if ($this->priceMax !== null && (!is_numeric($this->priceMax) || ((float)$this->priceMax <= 0
-            || ($this->priceMin !== null && (float)$this->priceMin >= (float)$this->priceMax))))
+                    || ($this->priceMin !== null && (float)$this->priceMin >= (float)$this->priceMax)))
+        ) {
             $this->addError("Offer: incorrect value in attribute 'price_max'");
+        }
 
         return $isValid && empty($this->errors);
     }
@@ -124,7 +130,7 @@ class TourOffer extends AExtOffer
      */
     public function addAttribute(array $attrNode)
     {
-        if ($attrNode['name'] == 'dataTour') {
+        if ($attrNode['name'] === 'dataTour') {
             $this->addDataTour($attrNode['value']);
         } else {
             parent::addAttribute($attrNode);
@@ -214,7 +220,7 @@ class TourOffer extends AExtOffer
      */
     public function getDataTours()
     {
-        return $this->dataTours ? $this->dataTours : null;
+        return $this->dataTours ?: null;
     }
 
     /**

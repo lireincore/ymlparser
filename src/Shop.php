@@ -449,7 +449,7 @@ class Shop
     public function getCategoryParent($id)
     {
         if (array_key_exists($id, $this->categories)
-            && !is_null($parentId = $this->categories[$id]->getParentId())
+            && null !== ($parentId = $this->categories[$id]->getParentId())
             && array_key_exists($parentId, $this->categories)
         ) {
             return $this->categories[$parentId];

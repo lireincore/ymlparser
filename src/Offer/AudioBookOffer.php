@@ -35,7 +35,7 @@ class AudioBookOffer extends ABookOffer
     public function getAttributesList()
     {
         return array_merge(parent::getAttributesList(), [
-            //subnodes
+            //subNodes
             'performed_by', 'performance_type', 'storage', 'format', 'recording_length'
         ]);
     }

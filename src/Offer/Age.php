@@ -2,11 +2,14 @@
 
 namespace LireinCore\YMLParser\Offer;
 
+use \LireinCore\YMLParser\TYML;
+use \LireinCore\YMLParser\TError;
+
 class Age
 {
-    use \LireinCore\YMLParser\TYML;
-    use \LireinCore\YMLParser\TError;
-    
+    use TYML;
+    use TError;
+
     /**
      * @var string
      */
@@ -22,15 +25,18 @@ class Age
      */
     public function isValid()
     {
-        if ($this->unit === null)
+        if ($this->unit === null){
             $this->addError("Age: missing required attribute 'unit'");
-        elseif ($this->unit !== 'year' && $this->unit !== 'month')
+        } elseif ($this->unit !== 'year' && $this->unit !== 'month') {
             $this->addError("Age: incorrect value in attribute 'unit'");
+        }
 
-        if ($this->unit === 'year' && !in_array($this->value, ['0', '6', '12', '16', '18']))
-            $this->addError("Age: incorrect value");
-        elseif ($this->unit === 'month' && !in_array($this->value, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']))
-            $this->addError("Age: incorrect value");
+        if ($this->unit === 'year' && !in_array((string)$this->value, ['0', '6', '12', '16', '18'],true)){
+            $this->addError('Age: incorrect value');
+        } elseif ($this->unit === 'month' && !in_array((string)$this->value, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],true)){
+            $this->addError('Age: incorrect value');
+        }
+
 
         return empty($this->errors);
     }

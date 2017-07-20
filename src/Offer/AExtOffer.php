@@ -73,7 +73,7 @@ abstract class AExtOffer extends AOffer
         if ($this->localDeliveryCost !== null && (!is_numeric($this->localDeliveryCost) || ((int)$this->localDeliveryCost) < 0)) {
             $this->addError("Offer: incorrect value in attribute 'local_delivery_cost'");
         }
-        if ($this->delivery === true && !$this->deliveryOptions && $this->localDeliveryCost == null) {
+        if ($this->delivery === true && !$this->deliveryOptions && $this->localDeliveryCost === null) {
             $this->addError("Offer: attribute 'delivery-options' is required when 'delivery' is true");
         }
         if ($this->manufacturerWarranty !== null && $this->manufacturerWarranty !== 'true' && $this->manufacturerWarranty !== 'false') {

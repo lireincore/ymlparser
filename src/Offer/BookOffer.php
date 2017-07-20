@@ -20,7 +20,7 @@ class BookOffer extends ABookOffer
     public function getAttributesList()
     {
         return array_merge(parent::getAttributesList(), [
-            //subnodes
+            //subNodes
             'binding', 'page_extent'
         ]);
     }
@@ -32,8 +32,9 @@ class BookOffer extends ABookOffer
     {
         $isValid = parent::isValid();
 
-        if ($this->pageExtent !== null && (!is_numeric($this->pageExtent) || (int)$this->volume <= 0))
+        if ($this->pageExtent !== null && (!is_numeric($this->pageExtent) || (int)$this->volume <= 0)){
             $this->addError("Offer: incorrect value in attribute 'page_extent'");
+        }
 
         return $isValid && empty($this->errors);
     }

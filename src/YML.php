@@ -2,6 +2,7 @@
 
 namespace LireinCore\YMLParser;
 
+use LireinCore\Exception\FileNotFoundException;
 use LireinCore\YMLParser\Offer\VendorModelOffer;
 use LireinCore\YMLParser\Offer\BookOffer;
 use LireinCore\YMLParser\Offer\AudioBookOffer;
@@ -239,19 +240,19 @@ class YML
     }
 
     /**
-     * @throws \RuntimeException
+     * @throws FileNotFoundException
      */
     protected function open()
     {
         $uri = (string)$this->uri;
         if (!$this->XMLReader->open($uri)) {
-            throw new \RuntimeException("Failed to open XML file '{$uri}'");
+            throw new FileNotFoundException("Failed to open XML file '{$uri}'");
         }
 
         if (!empty($this->schema)) {
             $schema = $this->schema;
             if (!$this->XMLReader->setSchema($schema)) {
-                throw new \RuntimeException("Failed to open XML Schema file '{$schema}'");
+                throw new FileNotFoundException("Failed to open XML Schema file '{$schema}'");
             }
         }
     }
