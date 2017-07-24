@@ -2,6 +2,10 @@
 
 namespace LireinCore\YMLParser;
 
+/**
+ * Trait TYML
+ * @package LireinCore\YMLParser
+ */
 trait TYML
 {
     /**
@@ -37,7 +41,9 @@ trait TYML
                 $getter = 'get' . $key;
                 if (method_exists($this, $getter)) {
                     $getValue = $this->$getter();
-                    if ($getValue !== null) $array[$key] = $getValue;
+                    if ($getValue !== null) {
+                        $array[$key] = $getValue;
+                    }
                 } elseif ($value !== null) {
                     $array[$key] = $value;
                 }
@@ -53,24 +59,26 @@ trait TYML
      */
     protected function getArray($value)
     {
-        $subarray = [];
+        $subArray = [];
 
-        foreach ($value as $subkey => $subvalue) {
-            if (is_object($subvalue) && method_exists($subvalue, 'getData')) {
-                $subarray[$subkey] = $subvalue->getData();
-            } elseif (is_array($subvalue)) {
-                $subarray[$subkey] = $this->getArray($subvalue);
+        foreach ($value as $subKey => $subValue) {
+            if (is_object($subValue) && method_exists($subValue, 'getData')) {
+                $subArray[$subKey] = $subValue->getData();
+            } elseif (is_array($subValue)) {
+                $subArray[$subKey] = $this->getArray($subValue);
             } else {
-                $getter = 'get' . $subkey;
+                $getter = 'get' . $subKey;
                 if (method_exists($this, $getter)) {
                     $getValue = $this->$getter();
-                    if ($getValue !== null) $subarray[$subkey] = $getValue;
-                } elseif ($subvalue !== null) {
-                    $subarray[$subkey] = $subvalue;
+                    if ($getValue !== null) {
+                        $subArray[$subKey] = $getValue;
+                    }
+                } elseif ($subValue !== null) {
+                    $subArray[$subKey] = $subValue;
                 }
             }
         }
 
-        return $subarray;
+        return $subArray;
     }
 }

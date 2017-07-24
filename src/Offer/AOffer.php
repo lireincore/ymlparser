@@ -2,10 +2,14 @@
 
 namespace LireinCore\YMLParser\Offer;
 
+use \LireinCore\YMLParser\TYML;
+use \LireinCore\YMLParser\TError;
+
 abstract class AOffer
 {
-    use \LireinCore\YMLParser\TYML;
-    use \LireinCore\YMLParser\TError;
+
+    use TYML;
+    use TError;
 
     const DEFAULT_CPA = 1;
 
@@ -132,7 +136,7 @@ abstract class AOffer
         return [
             //attributes
             'id', 'cbid', 'bid', 'available', //type,
-            //subnodes
+            //subNodes
             'price', 'oldprice', 'currencyId', 'categoryId', 'picture', 'delivery',
             'pickup', 'store', 'outlets', 'description', 'sales_notes', 'country_of_origin',
             'barcode', 'cpa', 'param', 'expiry', 'weight', 'dimensions'
@@ -144,63 +148,79 @@ abstract class AOffer
      */
     public function isValid()
     {
-        if ($this->id === null)
+        if ($this->id === null) {
             $this->addError("Offer: missing required attribute 'id'");
-        elseif (!$this->id)
+        } elseif (!$this->id) {
             $this->addError("Offer: incorrect value in attribute 'id'");
+        }
 
-        if ($this->bid !== null && (!is_numeric($this->bid) || (int)$this->bid <= 0))
+        if ($this->bid !== null && (!is_numeric($this->bid) || (int)$this->bid <= 0)) {
             $this->addError("Offer: incorrect value in attribute 'bid'");
+        }
 
-        if ($this->cbid !== null && (!is_numeric($this->cbid) || (int)$this->cbid <= 0))
+        if ($this->cbid !== null && (!is_numeric($this->cbid) || (int)$this->cbid <= 0)) {
             $this->addError("Offer: incorrect value in attribute 'cbid'");
+        }
 
         if ($this->available === null) {
-            if ($this->getPickup())
+            if ($this->getPickup()) {
                 $this->addError("Offer: attribute 'available' is required when 'pickup' is true");
-        }
-        elseif ($this->available !== 'true' && $this->available !== 'false')
+            }
+        } elseif ($this->available !== 'true' && $this->available !== 'false') {
             $this->addError("Offer: incorrect value in attribute 'available'");
+        }
 
-        if ($this->price === null)
+        if ($this->price === null) {
             $this->addError("Offer: missing required attribute 'price'");
-        elseif (!is_numeric($this->price) || (float)$this->price <= 0)
+        } elseif (!is_numeric($this->price) || (float)$this->price <= 0) {
             $this->addError("Offer: incorrect value in attribute 'price'");
+        }
 
-        if ($this->oldprice !== null && (!is_numeric($this->oldprice) || (float)$this->oldprice <= (float)$this->price))
+        if ($this->oldprice !== null && (!is_numeric($this->oldprice) || (float)$this->oldprice <= (float)$this->price)) {
             $this->addError("Offer: incorrect value in attribute 'oldprice'");
-        
-        if ($this->currencyId === null)
+        }
+
+        if ($this->currencyId === null) {
             $this->addError("Offer: missing required attribute 'currencyId'");
-        elseif (!$this->currencyId)
+        } elseif (!$this->currencyId) {
             $this->addError("Offer: incorrect value in attribute 'currencyId'");
+        }
 
-        if ($this->categoryId === null)
+        if ($this->categoryId === null) {
             $this->addError("Offer: missing required attribute 'categoryId'");
-        elseif (!$this->categoryId)
+        } elseif (!$this->categoryId) {
             $this->addError("Offer: incorrect value in attribute 'categoryId'");
+        }
 
-        if ($this->store !== null && $this->store !== 'true' && $this->store !== 'false')
+        if ($this->store !== null && $this->store !== 'true' && $this->store !== 'false') {
             $this->addError("Offer: incorrect value in attribute 'store'");
+        }
 
-        if ($this->pickup !== null && $this->pickup !== 'true' && $this->pickup !== 'false')
+        if ($this->pickup !== null && $this->pickup !== 'true' && $this->pickup !== 'false') {
             $this->addError("Offer: incorrect value in attribute 'pickup'");
+        }
 
-        if ($this->delivery !== null && $this->delivery !== 'true' && $this->delivery !== 'false')
+        if ($this->delivery !== null && $this->delivery !== 'true' && $this->delivery !== 'false') {
             $this->addError("Offer: incorrect value in attribute 'delivery'");
+        }
 
-        if ($this->weight !== null && (!is_numeric($this->weight) || (float)$this->weight <= 0))
+        if ($this->weight !== null && (!is_numeric($this->weight) || (float)$this->weight <= 0)) {
             $this->addError("Offer: incorrect value in attribute 'weight'");
+        }
 
         $subIsValid = true;
         if ($this->outlets) {
             foreach ($this->outlets as $outlet) {
-                if (!$outlet->isValid()) $subIsValid = false;
+                if (!$outlet->isValid()) {
+                    $subIsValid = false;
+                }
             }
         }
         if ($this->params) {
             foreach ($this->params as $param) {
-                if (!$param->isValid()) $subIsValid = false;
+                if (!$param->isValid()) {
+                    $subIsValid = false;
+                }
             }
         }
 
@@ -212,20 +232,20 @@ abstract class AOffer
      */
     public function getErrors()
     {
-        $errors = $this->errors;
+        $errors[] = $this->errors;
 
         if ($this->outlets) {
             foreach ($this->outlets as $outlet) {
-                $errors = array_merge($errors, $outlet->getErrors());
+                $errors[] = $outlet->getErrors();
             }
         }
         if ($this->params) {
             foreach ($this->params as $param) {
-                $errors = array_merge($errors, $param->getErrors());
+                $errors[] = $param->getErrors();
             }
         }
 
-        return $errors;
+        return 1 === count($errors) ? $errors[0] : call_user_func_array('array_merge', $errors);
     }
 
     /**
@@ -251,18 +271,20 @@ abstract class AOffer
      */
     public function addAttribute(array $attrNode)
     {
-        if ($attrNode['name'] == 'outlets') {
+        if ($attrNode['name'] === 'outlets') {
             foreach ($attrNode['nodes'] as $subNode) {
                 $this->addOutlet((new Outlet())->addAttributes($subNode['attributes']));
             }
-        } elseif ($attrNode['name'] == 'picture') {
+        } elseif ($attrNode['name'] === 'picture') {
             $this->addPicture($attrNode['value']);
-        } elseif ($attrNode['name'] == 'barcode') {
+        } elseif ($attrNode['name'] === 'barcode') {
             $this->addBarcode($attrNode['value']);
-        } elseif ($attrNode['name'] == 'param') {
+        } elseif ($attrNode['name'] === 'param') {
             $this->addParam((new Param())->addAttributes($attrNode['attributes'] + ['value' => $attrNode['value']]));
         } else {
-            if (!is_null($attrNode['value'])) $this->addField($attrNode['name'], $attrNode['value']);
+            if (!is_null($attrNode['value'])) {
+                $this->addField($attrNode['name'], $attrNode['value']);
+            }
             if (!empty($attrNode['attributes'])) {
                 foreach ($attrNode['attributes'] as $name => $value) {
                     $this->addField($name, $value);
@@ -449,7 +471,7 @@ abstract class AOffer
      */
     public function getPictures()
     {
-        return $this->pictures ? $this->pictures : null;
+        return $this->pictures ?: null;
     }
 
     /**
@@ -538,7 +560,7 @@ abstract class AOffer
      */
     public function getOutlets()
     {
-        return $this->outlets ? $this->outlets : null;
+        return $this->outlets ?: null;
     }
 
     /**
@@ -627,7 +649,7 @@ abstract class AOffer
      */
     public function getBarcodes()
     {
-        return $this->barcodes ? $this->barcodes : null;
+        return $this->barcodes ?: null;
     }
 
     /***
@@ -659,7 +681,7 @@ abstract class AOffer
      */
     public function getCpa()
     {
-        return $this->cpa === null ? null : ($this->cpa === '1' ? true : false);
+        return $this->cpa === null ? null : ($this->cpa === '1');
     }
 
     /**
@@ -735,7 +757,7 @@ abstract class AOffer
      */
     public function getParams()
     {
-        return $this->params ? $this->params : null;
+        return $this->params ?: null;
     }
 
     /**

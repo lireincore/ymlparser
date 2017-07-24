@@ -2,6 +2,7 @@
 
 namespace LireinCore\YMLParser;
 
+use LireinCore\Exception\FileNotFoundException;
 use LireinCore\YMLParser\Offer\VendorModelOffer;
 use LireinCore\YMLParser\Offer\BookOffer;
 use LireinCore\YMLParser\Offer\AudioBookOffer;
@@ -73,10 +74,10 @@ class YML
         $this->open();
 
         while ($this->read()) {
-            if ($this->path == 'yml_catalog') {
+            if ($this->path === 'yml_catalog') {
                 $this->date = $this->XMLReader->getAttribute('date');
                 while ($this->read()) {
-                    if ($this->path == 'yml_catalog/shop') {
+                    if ($this->path === 'yml_catalog/shop') {
                         $this->shop = $this->parseShop();
                         break;
                     }
@@ -113,11 +114,11 @@ class YML
         $this->open();
 
         while ($this->read()) {
-            if ($this->path == 'yml_catalog/shop/offers') {
+            if ($this->path === 'yml_catalog/shop/offers') {
                 while ($this->read()) {
-                    if ($this->path == 'yml_catalog/shop/offers/offer') {
+                    if ($this->path === 'yml_catalog/shop/offers/offer') {
                         yield $this->parseOffer();
-                    } elseif ($this->path == 'yml_catalog/shop') {
+                    } elseif ($this->path === 'yml_catalog/shop') {
                         break;
                     }
                 }
@@ -130,6 +131,7 @@ class YML
 
     /**
      * @return Shop
+     * @throws \Exception
      */
     protected function parseShop()
     {
@@ -138,11 +140,11 @@ class YML
         $nodes = [];
 
         while ($this->read()) {
-            if ($this->path == 'yml_catalog/shop/offers') {
+            if ($this->path === 'yml_catalog/shop/offers') {
                 $shop->setOffersCount($this->parseOffersCount());
-            } elseif ($xml->nodeType == \XMLReader::ELEMENT) {
+            } elseif ($xml->nodeType === \XMLReader::ELEMENT) {
                 $nodes[] = $this->parseNode('yml_catalog/shop');
-            } elseif ($this->path == 'yml_catalog') {
+            } elseif ($this->path === 'yml_catalog') {
                 break;
             }
         }
@@ -154,20 +156,21 @@ class YML
 
     /**
      * @return SimpleOffer|VendorModelOffer|BookOffer|AudioBookOffer|ArtistTitleOffer|MedicineOffer|EventTicketOffer|TourOffer
+     * @throws \Exception
      */
     protected function parseOffer()
     {
         $offerNode = $this->parseNode('yml_catalog/shop/offers');
 
         $type = isset($offerNode['attributes']['type']) ? $offerNode['attributes']['type'] : null;
-        $offer = $this->createOffer($type)->fillOffer($offerNode);
+        return $this->createOffer($type)->fillOffer($offerNode);
 
-        return $offer;
     }
 
     /**
      * @param string $basePath
      * @return array
+     * @throws \Exception
      */
     protected function parseNode($basePath)
     {
@@ -182,16 +185,16 @@ class YML
 
         if (!$isEmpty) {
             while ($this->read()) {
-                if ($xml->nodeType == \XMLReader::ELEMENT) {
+                if ($xml->nodeType === \XMLReader::ELEMENT) {
                     $nodes[] = $this->parseNode($path);
-                } elseif (($xml->nodeType == \XMLReader::TEXT || $xml->nodeType == \XMLReader::CDATA) && $xml->hasValue) {
+                } elseif (($xml->nodeType === \XMLReader::TEXT || $xml->nodeType === \XMLReader::CDATA) && $xml->hasValue) {
                     $value .= $xml->value;
-                } elseif ($this->path == $basePath) {
+                } elseif ($this->path === $basePath) {
                     break;
                 }
             }
         }
-        $value = (trim($value)) ? $value : null;
+        $value = trim($value) ?: null;
 
         return ['name' => $name, 'attributes' => $attributes, 'value' => $value, 'nodes' => $nodes];
     }
@@ -215,6 +218,7 @@ class YML
 
     /**
      * @return int
+     * @throws \Exception
      */
     protected function parseOffersCount()
     {
@@ -222,7 +226,7 @@ class YML
         $count = 0;
 
         while ($this->read()) {
-            if ($this->path == 'yml_catalog/shop/offers/offer') {
+            if ($this->path === 'yml_catalog/shop/offers/offer') {
                 $count++;
                 break;
             }
@@ -236,23 +240,23 @@ class YML
     }
 
     /**
-     * @throws \Exception
+     * @throws FileNotFoundException
      */
     protected function open()
     {
         $uri = (string)$this->uri;
         if (!$this->XMLReader->open($uri)) {
-            throw new \Exception("Failed to open XML file '{$uri}'");
+            throw new FileNotFoundException("Failed to open XML file '{$uri}'");
         }
 
         if (!empty($this->schema)) {
             $schema = $this->schema;
             if (!$this->XMLReader->setSchema($schema)) {
-                throw new \Exception("Failed to open XML Schema file '{$schema}'");
+                throw new FileNotFoundException("Failed to open XML Schema file '{$schema}'");
             }
         }
     }
-    
+
     protected function close()
     {
         $this->pathArr = [];
@@ -269,14 +273,13 @@ class YML
         $xml = $this->XMLReader;
 
         if ($xml->read()) {
-            if ($xml->nodeType == \XMLReader::ELEMENT && !$xml->isEmptyElement) {
-                array_push($this->pathArr, $xml->name);
+            if ($xml->nodeType === \XMLReader::ELEMENT && !$xml->isEmptyElement) {
+                $this->pathArr[] = $xml->name;
                 $this->path = implode('/', $this->pathArr);
-            } elseif ($xml->nodeType == \XMLReader::END_ELEMENT) {
+            } elseif ($xml->nodeType === \XMLReader::END_ELEMENT) {
                 array_pop($this->pathArr);
                 $this->path = implode('/', $this->pathArr);
             }
-
             return true;
         }
 

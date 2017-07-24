@@ -15,7 +15,7 @@ class SimpleOffer extends AMainOffer
     public function getAttributesList()
     {
         return array_merge(parent::getAttributesList(), [
-            //subnodes
+            //subNodes
             'name'
         ]);
     }
@@ -27,8 +27,9 @@ class SimpleOffer extends AMainOffer
     {
         $isValid = parent::isValid();
 
-        if ($this->name === null)
+        if ($this->name === null) {
             $this->addError("Offer: missing required attribute 'name'");
+        }
 
         return $isValid && empty($this->errors);
     }
