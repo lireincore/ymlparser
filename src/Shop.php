@@ -111,7 +111,7 @@ class Shop
 
         if ($this->company === null) {
             $this->addError("Shop: missing required attribute 'company'");
-        } elseif (!$this->company) {
+        } elseif (!is_string($this->company)) {
             $this->addError("Shop: incorrect value in attribute 'company'");
         }
 
@@ -470,13 +470,16 @@ class Shop
             $parents[$id] = $this->categories[$id];
             $pid = $id;
 
-            while (($parent = $this->getCategoryParent($pid)) !== null) {
+            while (null !== $parent = $this->getCategoryParent($pid)) {
                 $pid = $parent->getId();
-                array_unshift($parents, $parent);
+                if(array_key_exists($pid,$parents)){
+                    break; // prevent endless loop
+                }
+                $parents[$pid] = $parent;
             }
         }
 
-        return $parents;
+        return array_reverse($parents);
     }
 
     /**
