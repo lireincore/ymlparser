@@ -36,11 +36,6 @@ class Param
         } elseif (!$this->name) {
             $this->addError("Param: incorrect value in attribute 'name'");
         }
-
-        if (!$this->value) {
-            $this->addError('Param: incorrect value');
-        }
-
         return empty($this->errors);
     }
 
