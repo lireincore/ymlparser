@@ -374,15 +374,12 @@ class Shop
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPhone()
     {
         return $this->phone;
     }
 
-    /**
+
      * @param string $phone
      * @return $this
      */

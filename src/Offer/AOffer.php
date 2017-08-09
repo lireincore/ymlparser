@@ -159,6 +159,7 @@ abstract class AOffer
         }
 
         if ($this->cbid !== null && (!is_numeric($this->cbid) || (int)$this->cbid < 0)) {
+
             $this->addError("Offer: incorrect value in attribute 'cbid'");
         }
 

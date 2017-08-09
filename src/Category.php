@@ -33,6 +33,7 @@ class Category
             $this->addError("Category: incorrect value in attribute 'id'");
         }
         if ($this->parentId !== null && (!is_numeric($this->parentId) || (int)$this->parentId < 0)) {
+
             $this->addError("Category: incorrect value in attribute 'parentId'");
         }
         if (!$this->name) {

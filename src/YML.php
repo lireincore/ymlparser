@@ -194,7 +194,7 @@ class YML
                 }
             }
         }
-
+        $value = trim($value) 
         return ['name' => $name, 'attributes' => $attributes, 'value' => trim($value), 'nodes' => $nodes];
     }
 
