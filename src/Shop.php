@@ -465,13 +465,20 @@ class Shop
     public function getCategoryHierarchy($id)
     {
         $parents = [];
+        $ids = [];
 
         if (array_key_exists($id, $this->categories)) {
-            $parents[$id] = $this->categories[$id];
+            $parents[] = $this->categories[$id];
             $pid = $id;
+            $ids[] = $pid;
 
-            while (($parent = $this->getCategoryParent($pid)) !== null) {
+            while (null !== $parent = $this->getCategoryParent($pid)) {
                 $pid = $parent->getId();
+
+                if (in_array($pid, $ids, true)) {
+                    break;
+                }
+                $ids[] = $pid;
                 array_unshift($parents, $parent);
             }
         }
