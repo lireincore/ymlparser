@@ -51,6 +51,11 @@ abstract class AOffer
     /**
      * @var string
      */
+    protected $vat;
+
+    /**
+     * @var string
+     */
     protected $currencyId;
 
     /**
@@ -137,7 +142,7 @@ abstract class AOffer
             //attributes
             'id', 'cbid', 'bid', 'available', //type,
             //subNodes
-            'price', 'oldprice', 'currencyId', 'categoryId', 'picture', 'delivery',
+            'price', 'oldprice', 'vat', 'currencyId', 'categoryId', 'picture', 'delivery',
             'pickup', 'store', 'outlets', 'description', 'sales_notes', 'country_of_origin',
             'barcode', 'cpa', 'param', 'expiry', 'weight', 'dimensions'
         ];
@@ -178,6 +183,13 @@ abstract class AOffer
 
         if ($this->oldprice !== null && (!is_numeric($this->oldprice) || (float)$this->oldprice <= (float)$this->price)) {
             $this->addError("Offer: incorrect value in attribute 'oldprice'");
+        }
+
+        if ($this->vat !== null && !in_array($this->vat, [
+                '1', '2', '3', '4', '5', '6', 'VAT_18', 'VAT_18_118', 'VAT_10', 'VAT_10_110', 'VAT_0', 'NO_VAT'
+            ], true))
+        {
+            $this->addError("Offer: incorrect value in attribute 'vat'");
         }
 
         if ($this->currencyId === null) {
@@ -424,6 +436,25 @@ abstract class AOffer
     public function setOldprice($value)
     {
         $this->oldprice = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return int|string|null
+     */
+    public function getVat()
+    {
+        return is_numeric($this->vat) ? (int)$this->vat : $this->vat;
+    }
+
+    /**
+     * @param string $value
+     * @return $this
+     */
+    public function setVat($value)
+    {
+        $this->vat = $value;
 
         return $this;
     }
