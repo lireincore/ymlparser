@@ -204,15 +204,15 @@ abstract class AOffer
             $this->addError("Offer: incorrect value in attribute 'categoryId'");
         }
 
-        if ($this->store !== null && $this->store !== 'true' && $this->store !== 'false') {
+        if ($this->store !== null && !$this->isValidBoolean($this->store)) {
             $this->addError("Offer: incorrect value in attribute 'store'");
         }
 
-        if ($this->pickup !== null && $this->pickup !== 'true' && $this->pickup !== 'false') {
+        if ($this->pickup !== null && !$this->isValidBoolean($this->pickup)) {
             $this->addError("Offer: incorrect value in attribute 'pickup'");
         }
 
-        if ($this->delivery !== null && $this->delivery !== 'true' && $this->delivery !== 'false') {
+        if ($this->delivery !== null && !$this->isValidBoolean($this->delivery)) {
             $this->addError("Offer: incorrect value in attribute 'delivery'");
         }
 
@@ -237,6 +237,12 @@ abstract class AOffer
         }
 
         return empty($this->errors) && $subIsValid;
+    }
+
+    private function isValidBoolean($attribute)
+    {
+        $lc_attr = lcfirst($attribute);
+        return $lc_attr === 'true' || $lc_attr === 'false';
     }
 
     /**
