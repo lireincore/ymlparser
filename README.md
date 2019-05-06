@@ -24,12 +24,6 @@ package to your `require` section and
 ```
 in `repositories` section
 
-or
-
-``` bash
-$ php composer.phar require citysites/ymlparser
-```
-
 ## Usage
 
 ```php
