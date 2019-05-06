@@ -1,8 +1,8 @@
 # YML (Yandex Market Language) parser
 
-[![Latest Stable Version](https://poser.pugx.org/lireincore/ymlparser/v/stable)](https://packagist.org/packages/lireincore/ymlparser)
-[![Total Downloads](https://poser.pugx.org/lireincore/ymlparser/downloads)](https://packagist.org/packages/lireincore/ymlparser)
-[![License](https://poser.pugx.org/lireincore/ymlparser/license)](https://packagist.org/packages/lireincore/ymlparser)
+This is the fork of lirencore\ymlparser with some fixes not merged with main library for the this moment:
+- node value "0" should not be replaced with "null",
+- the fix for the boolean uppercase-value attribute validation.
 
 ## About
 
@@ -11,12 +11,23 @@ Based on XMLReader. Suitable for large files.
 
 ## Install
 
-Add the `"lireincore/ymlparser": "^3.2"` package to your `require` section in the `composer.json` file
+Add in the `composer.json` file the 
+```php
+"lireincore/ymlparser": "^3.2"
+```
+package to your `require` section and 
+```php
+{
+    "type": "git",
+    "url": "https://github.com/citysites/ymlparser"
+},
+```
+in `repositories` section
 
 or
 
 ``` bash
-$ php composer.phar require lireincore/ymlparser
+$ php composer.phar require citysites/ymlparser
 ```
 
 ## Usage
