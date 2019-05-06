@@ -1,6 +1,6 @@
 # YML (Yandex Market Language) parser
 
-This is the fork of lirencore\ymlparser with some fixes not merged with main library for the this moment:
+This is the fork of [lirencore\ymlparser](https://github.com/lireincore/ymlparser) with some fixes not merged with main library for the this moment:
 - node value "0" should not be replaced with "null",
 - the fix for the boolean uppercase-value attribute validation.
 
