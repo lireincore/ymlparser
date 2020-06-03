@@ -48,7 +48,7 @@ class SimpleOffer extends AMainOffer
      */
     public function setName($value)
     {
-        $this->name = $value;
+        $this->name = html_entity_decode($value);
 
         return $this;
     }
