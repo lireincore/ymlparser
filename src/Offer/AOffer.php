@@ -321,8 +321,10 @@ abstract class AOffer
      */
     public function setId($value)
     {
-        $this->id = $value;
-
+        if(empty($this->id))
+        {
+            $this->id = $value;
+        }
         return $this;
     }
 
