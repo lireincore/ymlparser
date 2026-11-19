@@ -378,6 +378,12 @@ abstract class AOffer
      */
     public function setAvailable($value)
     {
+        if ($value === '') {
+            $value = 'false';
+        } elseif ($value === 'склад') {
+            $value = 'true';
+        }
+
         $this->available = $value;
 
         return $this;
